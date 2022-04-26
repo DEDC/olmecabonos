@@ -1,0 +1,115 @@
+{% extends 'bonos/base.html' %}
+{% load static %}
+{% block head %}
+{{block.super}}
+<script src="{% static 'app.js' %}" defer></script>
+{% endblock %}
+{% block main %}
+<div class="mt-6 container mx-auto px-4">
+    <div class="px-4 py-5 bg-white sm:p-6">
+        <div class="grid grid-cols-6 gap-6">
+            <div class="col-span-6 sm:col-span-3">
+                <fieldset>
+                    <legend class="text-base font-medium text-gray-900">1- Selecciona los estadios a los que aplicará el
+                        bono.
+                    </legend>
+                    <div class="mt-4 space-y-4">
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="stadium1" name="stadium" type="checkbox"
+                                    class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded stadium">
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="stadium1" class="font-medium text-gray-700">Estadio Centenario</label>
+                                <p class="text-gray-500">Circuito Deportivo, Primero de Mayo, 86100 Villahermosa, Tab.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-start">
+                            <div class="flex items-center h-5">
+                                <input id="stadium2" name="stadium" type="checkbox"
+                                    class="focus:ring-indigo-500 h-4 w-4 text-indigo-600 border-gray-300 rounded stadium">
+                            </div>
+                            <div class="ml-3 text-sm">
+                                <label for="stadium2" class="font-medium text-gray-700">Estadio Macuspana</label>
+                                <p class="text-gray-500">Macuspana, Tab.</p>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+            <div class="col-span-6 sm:col-span-3">
+                <fieldset class="pb-8">
+                    <legend class="text-base font-medium text-gray-900">2- Selecciona el tipo de bono.
+                    </legend>
+                    <div class="grid grid-cols-6 gap-6">
+                        <div class="col-span-6 sm:col-span-3 mt-4">
+                            <select id="bonus_type" name="bonus_type"
+                                class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                <option value="">-------</option>
+                                <option value="comprado">Comprado</option>
+                                <option value="vitalicio">Vitalicio</option>
+                                <option value="cortesia">Cortesía</option>
+                                <option value="palco">Palco</option>
+                            </select>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset class="pb-8">
+                    <legend class="text-base font-medium text-gray-900">3- Ingresa la cantidad de bonos a generar.
+                    </legend>
+                    <div class="grid grid-cols-6 gap-6">
+                        <div class="col-span-6 sm:col-span-3">
+                            <div class="mt-4 space-y-4">
+                                <div class="col-span-6 sm:col-span-3">
+                                    <input type="number" name="quantity" id="quantity">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+            </div>
+        </div>
+        <fieldset class="pb-8">
+            <legend class="text-base font-medium text-gray-900 pb-5">4- Complete la información de los bonos.</legend>
+            <form action="#" method="POST">
+                <div class="bonus">
+                    <h3>Olmecabono</h3>
+                    <p><span>fdgfdgd</span> <span>fdsdff</span></p>
+                    <div class="grid grid-cols-6 gap-6">
+                        <div class="col-span-6 sm:col-span-6">
+                            <label for="full_name">Nombre completo</label>
+                            <input type="text" name="full_name" id="full_name">
+                        </div>
+                        <div class="col-span-6 sm:col-span-3">
+                            <label for="phone_number">Teléfono</label>
+                            <input type="text" name="phone_number" id="phone_number">
+                        </div>
+                        <div class="col-span-6 sm:col-span-3">
+                            <label for="email">Correo electrónico</label>
+                            <input type="text" name="email" id="email">
+                        </div>
+                        <div class="col-span-6 sm:col-span-6 lg:col-span-2">
+                            <label for="section">Sección</label>
+                            <input type="text" name="section" id="section">
+                        </div>
+                        <div class="col-span-6 sm:col-span-3 lg:col-span-2">
+                            <label for="row">Fila</label>
+                            <input type="text" name="row" id="row">
+                        </div>
+                        <div class="col-span-6 sm:col-span-3 lg:col-span-2">
+                            <label for="seat">No. butaca</label>
+                            <input type="text" name="seat" id="seat">
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </fieldset>
+    </div>
+    <div class="px-4 py-3 text-right sm:px-6">
+        <button type="submit"
+            class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-600">Guardar
+            Bono</button>
+    </div>
+</div>
+{% endblock %}
