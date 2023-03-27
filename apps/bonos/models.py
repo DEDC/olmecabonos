@@ -13,5 +13,5 @@ class Bono(ControlInfo):
         ('palco', 'Palco')
     )
     tipo = models.CharField(choices=tipos, max_length=10, default='cortesia')
-    abonado = JSONField() #(nombre, teléfono, correo opcional)
-    ubicacion = JSONField() #(sección, fila, no. butaca)
+    abonado = JSONField(editable=False) #(nombre, teléfono, correo opcional)
+    ubicacion = JSONField(editable=False) #(sección, fila, no. butaca)

@@ -14,21 +14,18 @@ def read_bonus():
             'correo': '',
             'telefono': ''
         }
+        
         tipo = sheet_obj.cell(row = i, column = 1).value
-        centenario = {
+        
+        estadio = {
             'seccion': sheet_obj.cell(row = i, column = 3).value,
             'fila': sheet_obj.cell(row = i, column = 4).value,
             'butaca': sheet_obj.cell(row = i, column = 5).value
-        }
-        macuspana = {
-            'seccion': sheet_obj.cell(row = i, column = 6).value,
-            'fila': sheet_obj.cell(row = i, column = 7).value,
-            'butaca': sheet_obj.cell(row = i, column = 8).value
-        }
+        }        
         
         Bono.objects.create(
             tipo = tipo,
             abonado = abonado,
-            ubicacion = {'centenario': centenario, 'macuspana': macuspana}
+            ubicacion = {'estadio': estadio}
         )
         i = i+1

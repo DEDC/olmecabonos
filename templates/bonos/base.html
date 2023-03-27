@@ -1,12 +1,35 @@
 {% extends 'base/base.html' %}
+{% load static %}
 {% block body %}
 {% block navbar %}
 <header>
-    <nav class="flex items-center justify-between px-4 py-6 bg-green-700">
-        <div>
-            <a href="/" class="text-xl text-white">Olmecabonos</a>
-        </div>
-    </nav>
+    <div class="container">
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="{% url 'registro' %}">
+                    <img src="{% static 'images/logo.png' %}" alt="DeBoleto">
+                </a>
+                <div class="collapse navbar-collapse justify-content-end me-2" id="navbarNavAltMarkup">
+                    <ul class="navbar-nav">                        
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'registro' %}">Registro</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'listar' %}">Listado</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'registro' %}">Cargar Excel</a>
+                        </li>
+                    </ul>
+                </div>
+                <form class="d-flex" role="search" action="{% url 'listar' %}">
+                    <input value="{{q}}" name="q" class="form-control me-2" type="search"
+                        placeholder="Ingresa un folio">
+                    <button class="btn green-btn text-white" type="submit">Buscar</button>
+                </form>
+            </div>
+        </nav>
+    </div>
 </header>
 {% endblock %}
 {% block main %}

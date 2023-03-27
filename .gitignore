@@ -7,7 +7,6 @@ _pycache_/
 *.so
 
 # Custom ignore
-settings.py
 socket/
 
 # Distribution / packaging

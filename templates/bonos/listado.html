@@ -1,0 +1,78 @@
+{% extends 'bonos/base.html' %}
+{% load static %}
+{% load generate_qr %}
+{% block head %}
+{{block.super}}
+<style>
+    .card {
+        background-color: #2ba17c;
+        color: white;
+    }
+</style>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        chks = document.querySelector('#formdown').querySelectorAll('input[name="bonus"]');
+        chk_all = document.querySelector('#slc_all');
+        chk_all.addEventListener('change', () => {
+            chks.forEach(e => {
+                e.checked = chk_all.checked;
+            });
+        });
+    });
+</script>
+{% endblock %}
+{% block main %}
+<div class="container mt-5 mb-5">
+    <div class="card shadow-sm border-0">
+        <h4 class="card-header bg-black text-white">Listado de bonos</h4>
+    </div>
+    <form action="{% url 'descargar' %}" method="post" id="formdown">
+        {% csrf_token %}
+        <div class="d-flex justify-content-between align-items-center my-3">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="slc_all">
+                <label class="form-check-label" for="slc_all">
+                    Seleccionar todo
+                </label>
+            </div>
+            <button type="submit" class="btn btn-light">Descargar seleccionados</button>
+        </div>
+        <div class="row">
+            {% for obj in object_list %}
+            <div class="col-lg-4 col-md-6 col-sm-12">
+                <div class="card mb-3 shadow border border-3 border-dark-subtle">
+                    <div class="card-header">
+                        <input name="bonus" class="form-check-input me-2" type="checkbox" value="{{obj.folio}}">
+                        OLMECABONO 2023
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-start align-items-center">
+                            {% generate_qr obj.folio %}
+                            <div class="ms-3">
+                                <h4 class="card-title bold"><b>{{obj.abonado.name}}</b></h4>
+                                <span>Sección: <b>{{obj.ubicacion.section}}</b></span>&nbsp;&nbsp;
+                                <span>Fila: <b>{{obj.ubicacion.row}}</b></span>&nbsp;&nbsp;
+                                <span>Asiento: <b>{{obj.ubicacion.seat}}</b></span>
+                            </div>
+                        </div>
+                        <div class="mt-3 text-end">
+                            <a href="{% url 'descargar' %}?bonus={{obj.folio}}" type="button" class="btn btn-light"
+                                style="--bs-btn-padding-y: .08rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .70rem;">Descargar</a>
+                            <button type="button" class="btn btn-light"
+                                style="--bs-btn-padding-y: .08rem; --bs-btn-padding-x: .5rem; --bs-btn-font-size: .70rem;">Editar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="container">
+                <div class="alert alert-warning text-center" role="alert">
+                    No se encontraron resultados
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </form>
+</div>
+<br><br><br>
+{% endblock %}
