@@ -7,7 +7,7 @@ from django.contrib.messages.views import SuccessMessageMixin
 from apps.bonos.models import Bono
 from apps.bonos.forms import BonosForm
 # utils
-from utils.bonos_pdf import generate_bonus
+from utils.bonos_pdf import generate_bonus, generate_qr
 
 class Registrar(SuccessMessageMixin, CreateView):
     success_message = 'Bono registrado exitosamente'
@@ -31,9 +31,12 @@ class Registrar(SuccessMessageMixin, CreateView):
         form.instance.abonado = abonado
         form.instance.ubicacion = bono
         self.object = form.save()
-        response = generate_bonus([self.object])
         if self.request.POST.get('sv-dw', None) is not None:
-            return response
+            response_bn = generate_bonus([self.object])
+            return response_bn
+        elif self.request.POST.get('sv-qr', None) is not None:
+            response_qr = generate_qr(self.object)
+            return response_qr
         return super().form_valid(form)
 
 class Listar(ListView):
@@ -57,19 +60,20 @@ class Descargar(RedirectView):
     def get(self, request, *args, **kwargs):
         bonus = [request.GET.get('bonus')]
         bonos = Bono.objects.filter(folio__in = bonus)
-        response = generate_bonus(bonos)
         try:
             bonos = Bono.objects.filter(folio__in = bonus)
-            response = generate_bonus(bonos)
-            return response
-        except:
-            return super().get(request, *args, **kwargs)
+            if bonos.exists():
+                response = generate_bonus(bonos)
+                return response
+        except: pass
+        return super().get(request, *args, **kwargs)
     
     def post(self, request, *args, **kwargs):
         bonus = request.POST.getlist('bonus')
         try:
             bonos = Bono.objects.filter(folio__in = bonus)
-            response = generate_bonus(bonos)
-            return response
-        except:
-            return self.get(request, *args, **kwargs)
+            if bonos.exists():
+                response = generate_bonus(bonos)
+                return response
+        except: pass
+        return self.get(request, *args, **kwargs)

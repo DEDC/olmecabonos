@@ -10,6 +10,14 @@ from PIL import Image, ImageFont, ImageDraw
 # qrcode
 import qrcode
 
+# class GenerateBonus():
+#     def __init__(self, bonus_list = [], drawer = None):
+#         self.bonus_list = bonus_list
+#         self.drawer = drawer
+
+# class DrawBonous:
+    
+
 def generate_bonus(bonus):
     b2 = io.BytesIO()
     zf = zipfile.ZipFile(b2, "w")
@@ -48,6 +56,7 @@ def generate_bonus(bonus):
         bonus_seat = obj.ubicacion['seat']
         w, h = bonus.textsize(bonus_seat, font=font_label)
         bonus.text((770, 301), bonus_seat, fill="#056b3d", font=font_label)
+        # QR
         qr_img = qrcode.make(obj.folio, border=0, box_size=6)
         qr_w, qr_h = qr_img.size
         offset = ((W-qr_w)//9, 208)
@@ -68,7 +77,15 @@ def generate_bonus(bonus):
         b1.close()
     return response
 
-
+def generate_qr(bonus):
+    b1 = io.BytesIO()
+    qr_img = qrcode.make(bonus.folio, border=1, box_size=12)
+    qr_img.save(b1)
+    response = HttpResponse(b1.getvalue(), content_type = 'image/png')
+    response['Content-Disposition'] = 'attachment; filename={}_{}_QR.png'.format(bonus.abonado['name'], bonus.folio)
+    b1.close()
+    return response   
+    
     # bonus_info1 = 'SECCIÓN'
     # bonus_info2 = 'FILA'
     # bonus_info3 = 'NO.BUTACA'
