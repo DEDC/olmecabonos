@@ -3,6 +3,7 @@ from django.views.generic import CreateView, ListView, RedirectView
 from django.urls import reverse_lazy
 from django.db.models import Q
 from django.contrib.messages.views import SuccessMessageMixin
+from django.http import HttpResponseRedirect
 # app bonos
 from apps.bonos.models import Bono
 from apps.bonos.forms import BonosForm
@@ -37,7 +38,7 @@ class Registrar(SuccessMessageMixin, CreateView):
         elif self.request.POST.get('sv-qr', None) is not None:
             response_qr = generate_qr(self.object)
             return response_qr
-        return super().form_valid(form)
+        return HttpResponseRedirect(self.get_success_url())
 
 class Listar(ListView):
     model = Bono
