@@ -5,7 +5,7 @@
 <script src="{% static 'app.js' %}" defer></script>
 {% endblock %}
 {% block main %}
-<div class="container mt-5">
+<div class="container mt-5 mb-5">
     {% if messages %}
     {% for message in messages %}
     {% if message.tags == 'success' %}
@@ -24,19 +24,19 @@
                 <h6 class="text-secondary">1- Información del abonado</h6>
                 <hr class="mt-0 border border-light border-1 opacity-100">
                 <div class="row">
-                    <div class="col-4">
+                    <div class="col-sm-12 col-lg-4">
                         <div class="mb-3">
                             <label for="bn-name" class="form-label">Nombre completo</label>
                             <input type="text" class="form-control" id="bn-name" name="bn-name" required>
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-sm-12 col-lg-4">
                         <div class="mb-3">
                             <label for="bn-phone" class="form-label">Teléfono</label>
                             <input type="text" class="form-control" id="bn-phone" name="bn-phone" required>
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-sm-12 col-lg-4">
                         <div class="mb-3">
                             <label for="bn-email" class="form-label">Correo electrónico</label>
                             <input type="text" class="form-control" id="bn-email" name="bn-email" required>
@@ -47,25 +47,25 @@
                 <h6 class="text-secondary">2- Información del bono</h6>
                 <hr class="mt-0 border border-light border-1 opacity-100">
                 <div class="row">
-                    <div class="col-4">
+                    <div class="col-sm-12 col-lg-4">
                         <div class="mb-3">
                             <label for="bn-section" class="form-label">Sección</label>
                             <input type="text" class="form-control" id="bn-section" name="bn-section" required>
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-sm-12 col-lg-4">
                         <div class="mb-3">
                             <label for="bn-row" class="form-label">Fila</label>
                             <input type="text" class="form-control" id="bn-row" name="bn-row" required>
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-sm-12 col-lg-4">
                         <div class="mb-3">
                             <label for="bn-seat" class="form-label">Asiento</label>
                             <input type="text" class="form-control" id="bn-seat" name="bn-seat" required>
                         </div>
                     </div>
-                    <div class="col-4">
+                    <div class="col-sm-12 col-lg-4">
                         <div class="mb-3">
                             <label for="bn-type" class="form-label">Tipo de bono</label>
                             <select class="form-select" id="bn-type" name="tipo">
