@@ -10,7 +10,12 @@ class Bono(ControlInfo):
         ('comprado', 'Comprado'),
         ('vitalicio', 'Vitalicio'),
         ('cortesia', 'Cortesía'),
-        ('palco', 'Palco')
+        ('palco', 'Palco'),
+        ('seguridad', 'Seguridad'),
+        ('operativo', 'Operativo'),
+        ('network', 'Network'),
+        ('directiva', 'Directiva'),
+        ('admin', 'Administración')
     )
     tipo = models.CharField(choices=tipos, max_length=10, default='cortesia')
     abonado = JSONField(editable=False) #(nombre, teléfono, correo opcional)
