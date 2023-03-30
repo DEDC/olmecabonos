@@ -79,7 +79,7 @@ class Descargar(RedirectView):
     def post(self, request, *args, **kwargs):
         bonus = request.POST.getlist('bonus')
         try:
-            bonos = Bono.objects.filter(folio__in = bonus)
+            bonos = Bono.objects.filter(folio__in=bonus)
             if bonos.exists():
                 response = generate_bonus(bonos)
                 return response
@@ -107,9 +107,12 @@ class CargarExcel(TemplateView):
                 objs.append(Bono(abonado=abonado, ubicacion=bono, tipo=row[4].value.lower()))
             cache.set('bonus_cache', objs)
         if request.POST.get('save') is not None:
-            if isinstance(cache.get('bonus_cache'), list):
-                bonus_saved = Bono.objects.bulk_create(cache.get('bonus_cache'))
-                messages.success(self.request, 'Se registraron {} bono(s) exitosamente'.format(len(bonus_saved)))
+            bonus_cache = cache.get('bonus_cache')
+            if isinstance(bonus_cache, list):
+                for obj in bonus_cache:
+                    obj.save()
+                # bonus_saved = Bono.objects.bulk_create(cache.get('bonus_cache'))
+                messages.success(self.request, 'Se registraron {} bono(s) exitosamente'.format(len(bonus_cache)))
                 cache.set('bonus_cache', None)
         context['bonus'] = cache.get('bonus_cache')
         return self.render_to_response(context)
