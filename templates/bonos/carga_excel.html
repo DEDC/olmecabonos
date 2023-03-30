@@ -1,0 +1,67 @@
+{% extends 'bonos/base.html' %}
+{% load static %}
+{% block head %}
+{{block.super}}
+<script src="{% static 'app.js' %}" defer></script>
+{% endblock %}
+{% block main %}
+<div class="container mt-5 mb-5">
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.tags == 'success' %}
+    <div class="alert alert-success text-center" role="alert">
+        {{message|safe}}
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    <div class="card shadow-sm border-0">
+        <h4 class="card-header bg-black text-white">Cargar Excel</h4>
+        <div class="card-body">
+            <br>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                <h6 class="text-secondary">1- Seleccione un documento de Excel y cárguelo en el siguiente campo.</h6>
+                <div class="d-grid gap-2 col-6 mx-auto p-4">
+                    <input class="form-control form-control-lg" id="formFileLg" type="file" name="file" required>
+                </div>
+                <div class="text-center">
+                    <button name="upload" type="submit" class="btn btn-success text-white">Subir documento</button>
+                </div>
+            </form>
+            <br>
+            <h6 class="text-secondary">2- Verifique la información obtenida del Excel.</h6>
+            <table class="table table-hover m-0">
+                <thead class="bg-black text-white">
+                    <tr>
+                        <th scope="col">No.</th>
+                        <th scope="col">Nombre</th>
+                        <th scope="col">Sección/Zona</th>
+                        <th scope="col">Fila</th>
+                        <th scope="col">Asiento</th>
+                        <th scope="col">Tipo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bn in bonus %}
+                    <tr>
+                        <td>{{forloop.counter}}</td>
+                        <td>{{bn.abonado.name}}</td>
+                        <td>{{bn.ubicacion.section}}</td>
+                        <td>{{bn.ubicacion.row}}</td>
+                        <td>{{bn.ubicacion.seat}}</td>
+                        <td>{{bn.tipo}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <form method="post">
+                {% csrf_token %}
+                <div class="text-center mt-4">
+                    <button name="save" type="submit" class="btn btn-success text-white">Crear bonos</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

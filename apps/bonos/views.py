@@ -1,14 +1,18 @@
 # Django
-from django.views.generic import CreateView, ListView, RedirectView
+from django.views.generic import CreateView, ListView, RedirectView, TemplateView
 from django.urls import reverse_lazy
 from django.db.models import Q
 from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
+from django.core.cache import cache
+from django.contrib import messages
 # app bonos
 from apps.bonos.models import Bono
 from apps.bonos.forms import BonosForm
 # utils
 from utils.bonos_pdf import generate_bonus, generate_qr
+# openpyxl
+from openpyxl import load_workbook
 
 class Registrar(SuccessMessageMixin, CreateView):
     success_message = 'Bono registrado exitosamente'
@@ -78,3 +82,30 @@ class Descargar(RedirectView):
                 return response
         except: pass
         return self.get(request, *args, **kwargs)
+
+class CargarExcel(SuccessMessageMixin, TemplateView):
+    template_name = 'bonos/carga_excel.html'
+    
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        context['bonus'] = cache.get('bonus_cache')
+        return self.render_to_response(context)
+    
+    def post(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        if request.POST.get('upload') is not None:
+            file_ = request.FILES.get('file')
+            wb = load_workbook(file_)
+            ws = wb.active
+            objs = []
+            for row in ws.iter_rows(min_row=2):
+                abonado = {'name': row[0].value.title(), 'email': '', 'phone': ''}
+                bono = {'section': str(row[1].value).upper(), 'row': row[2].value.upper(), 'seat': str(row[3].value).upper()}
+                objs.append(Bono(abonado=abonado, ubicacion=bono, tipo=row[4].value))
+            cache.set('bonus_cache', objs)
+        if request.POST.get('save') is not None:
+            bonus_saved = Bono.objects.bulk_create(cache.get('bonus_cache'))
+            messages.success(self.request, 'Se registraron {} bono(s) exitosamente'.format(len(bonus_saved)))
+            cache.set('bonus_cache', [])
+        context['bonus'] = cache.get('bonus_cache')
+        return self.render_to_response(context)

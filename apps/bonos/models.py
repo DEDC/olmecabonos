@@ -7,6 +7,7 @@ from utils.models import ControlInfo
 class Bono(ControlInfo):
     identifier = 'OMB'
     tipos = (
+        ('abonado', 'Abonado'),
         ('comprado', 'Comprado'),
         ('vitalicio', 'Vitalicio'),
         ('cortesia', 'Cortesía'),
