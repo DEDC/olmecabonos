@@ -54,7 +54,6 @@ class Listar(ListView):
         lookup = (Q(folio__icontains = q) | Q(abonado__name__icontains = q))
         bonus = self.model._default_manager.filter(lookup)
         if len(type_) > 0:
-            print(type_)
             bonus = bonus.filter(tipo__in=type_)
         self.queryset = bonus
         return bonus
