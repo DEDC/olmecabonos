@@ -26,6 +26,58 @@
     <div class="card shadow-sm border-0">
         <h4 class="card-header bg-black text-white">Listado de bonos</h4>
     </div>
+    <form class="mt-3" role="search" action="{% url 'listar' %}">
+        <div class="d-flex">
+            <input value="{{q}}" name="q" class="form-control me-2" type="search" placeholder="Ingresa un folio">
+            <button class="btn green-btn text-white" type="submit">Buscar</button>
+        </div>
+        <br>
+        <div class="form-check form-check-inline">
+            <input name="type" class="form-check-input" type="checkbox" id="abonado" value="abonado" {% if 'abonado' in type %}checked{% endif %}>
+            <label class="form-check-label" for="abonado">Abonados</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input name="type" class="form-check-input" type="checkbox" id="comprado" value="comprado" {% if 'comprado' in type %}checked{% endif %}>
+            <label class="form-check-label" for="comprado">Comprados</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input name="type" class="form-check-input" type="checkbox" id="vitalicio" value="vitalicio" {% if 'vitalicio' in type %}checked{% endif %}>
+            <label class="form-check-label" for="vitalicio">Vitalicio</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input name="type" class="form-check-input" type="checkbox" id="cortesia" value="cortesia" {% if 'cortesia' in type %}checked{% endif %}>
+            <label class="form-check-label" for="cortesia">Cortesía</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input name="type" class="form-check-input" type="checkbox" id="palco" value="palco" {% if 'palco' in type %}checked{% endif %}>
+            <label class="form-check-label" for="palco">Palco</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input name="type" class="form-check-input" type="checkbox" id="seguridad" value="seguridad" {% if 'seguridad' in type %}checked{% endif %}>
+            <label class="form-check-label" for="seguridad">Seguridad</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input name="type" class="form-check-input" type="checkbox" id="operativo" value="operativo" {% if 'operativo' in type %}checked{% endif %}>
+            <label class="form-check-label" for="operativo">Operativo</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input name="type" class="form-check-input" type="checkbox" id="network" value="network" {% if 'network' in type %}checked{% endif %}>
+            <label class="form-check-label" for="network">Network</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input name="type" class="form-check-input" type="checkbox" id="directiva" value="directiva" {% if 'directiva' in type %}checked{% endif %}>
+            <label class="form-check-label" for="directiva">Directiva</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input name="type" class="form-check-input" type="checkbox" id="admin" value="admin" {% if 'admin' in type %}checked{% endif %}>
+            <label class="form-check-label" for="admin">Administración</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input name="type" class="form-check-input" type="checkbox" id="tarjeton" value="tarjeton" {% if 'tarjeton' in type %}checked{% endif %}>
+            <label class="form-check-label" for="tarjeton">Tarjetón Est.</label>
+        </div>
+    </form>
+    <hr>
     <form action="{% url 'descargar' %}" method="post" id="formdown">
         {% csrf_token %}
         <div class="d-flex justify-content-between align-items-center my-3">

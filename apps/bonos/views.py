@@ -14,8 +14,7 @@ from utils.bonos_pdf import generate_bonus, generate_qr
 # openpyxl
 from openpyxl import load_workbook
 
-class Registrar(SuccessMessageMixin, CreateView):
-    success_message = 'Bono registrado exitosamente'
+class Registrar(CreateView):
     model = Bono
     template_name = 'bonos/registro.html'
     form_class = BonosForm
@@ -36,6 +35,7 @@ class Registrar(SuccessMessageMixin, CreateView):
         form.instance.abonado = abonado
         form.instance.ubicacion = bono
         self.object = form.save()
+        messages.success(self.request, 'Bono registrado exitosamente')
         if self.request.POST.get('sv-dw', None) is not None:
             response_bn = generate_bonus([self.object])
             return response_bn
@@ -50,13 +50,17 @@ class Listar(ListView):
     
     def get_queryset(self):
         q = self.request.GET.get('q', '')
+        type_ = self.request.GET.getlist('type', [])
         lookup = (Q(folio__icontains = q) | Q(abonado__name__icontains = q))
         bonus = self.model._default_manager.filter(lookup)
+        if len(type_) > 0:
+            print(type_)
+            bonus = bonus.filter(tipo__in=type_)
         self.queryset = bonus
         return bonus
     
     def get_context_data(self):
-        context = {'q': self.request.GET.get('q', ''), 'total': self.queryset.count()}
+        context = {'q': self.request.GET.get('q', ''), 'type': self.request.GET.getlist('type', []), 'total': self.queryset.count()}
         return super().get_context_data(**context)
 
 class Descargar(RedirectView):
@@ -83,7 +87,7 @@ class Descargar(RedirectView):
         except: pass
         return self.get(request, *args, **kwargs)
 
-class CargarExcel(SuccessMessageMixin, TemplateView):
+class CargarExcel(TemplateView):
     template_name = 'bonos/carga_excel.html'
     
     def get(self, request, *args, **kwargs):
@@ -101,11 +105,12 @@ class CargarExcel(SuccessMessageMixin, TemplateView):
             for row in ws.iter_rows(min_row=2):
                 abonado = {'name': row[0].value.title(), 'email': '', 'phone': ''}
                 bono = {'section': str(row[1].value).upper(), 'row': row[2].value.upper(), 'seat': str(row[3].value).upper()}
-                objs.append(Bono(abonado=abonado, ubicacion=bono, tipo=row[4].value))
+                objs.append(Bono(abonado=abonado, ubicacion=bono, tipo=row[4].value.lower()))
             cache.set('bonus_cache', objs)
         if request.POST.get('save') is not None:
-            bonus_saved = Bono.objects.bulk_create(cache.get('bonus_cache'))
-            messages.success(self.request, 'Se registraron {} bono(s) exitosamente'.format(len(bonus_saved)))
-            cache.set('bonus_cache', [])
+            if isinstance(cache.get('bonus_cache'), list):
+                bonus_saved = Bono.objects.bulk_create(cache.get('bonus_cache'))
+                messages.success(self.request, 'Se registraron {} bono(s) exitosamente'.format(len(bonus_saved)))
+                cache.set('bonus_cache', None)
         context['bonus'] = cache.get('bonus_cache')
         return self.render_to_response(context)
