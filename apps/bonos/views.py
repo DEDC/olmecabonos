@@ -1,8 +1,9 @@
+# Python
+import datetime
 # Django
-from django.views.generic import CreateView, ListView, RedirectView, TemplateView
+from django.views.generic import CreateView, ListView, RedirectView, TemplateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.db.models import Q
-from django.contrib.messages.views import SuccessMessageMixin
 from django.http import HttpResponseRedirect
 from django.core.cache import cache
 from django.contrib import messages
@@ -50,16 +51,32 @@ class Listar(ListView):
     
     def get_queryset(self):
         q = self.request.GET.get('q', '')
+        dstart = self.request.GET.get('start', '')
+        dend = self.request.GET.get('end', '')
         type_ = self.request.GET.getlist('type', [])
         lookup = (Q(folio__icontains = q) | Q(abonado__name__icontains = q))
         bonus = self.model._default_manager.filter(lookup)
         if len(type_) > 0:
             bonus = bonus.filter(tipo__in=type_)
+        if dstart:
+            try:
+                if dend:
+                    bonus = bonus.filter(fecha_reg__date__range=[datetime.datetime.fromisoformat(dstart).date(), datetime.datetime.fromisoformat(dend).date()])
+                else:
+                    bonus = bonus.filter(fecha_reg__date__range=[datetime.datetime.fromisoformat(dstart).date(), datetime.datetime.fromisoformat(dstart).date()])
+            except:
+                pass
         self.queryset = bonus
         return bonus
     
     def get_context_data(self):
-        context = {'q': self.request.GET.get('q', ''), 'type': self.request.GET.getlist('type', []), 'total': self.queryset.count()}
+        context = {
+            'q': self.request.GET.get('q', ''), 
+            'type': self.request.GET.getlist('type', []), 
+            'total': self.queryset.count(),
+            'start': self.request.GET.get('start', ''),
+            'end': self.request.GET.get('end', '')
+        }
         return super().get_context_data(**context)
 
 class Descargar(RedirectView):
@@ -116,3 +133,51 @@ class CargarExcel(TemplateView):
                 cache.set('bonus_cache', None)
         context['bonus'] = cache.get('bonus_cache')
         return self.render_to_response(context)
+
+class Editar(UpdateView):
+    template_name = 'bonos/editar.html'
+    model = Bono
+    form_class = BonosForm
+    slug_field = 'uuid'
+    slug_url_kwarg = 'uuid'
+    
+    def form_valid(self, form):
+        abonado = {
+            'name': self.request.POST.get('bn-name', 'ND').title(),
+            'email': self.request.POST.get('bn-email', 'ND'),
+            'phone': self.request.POST.get('bn-phone', 'ND')
+        }
+        bono = {
+            'section': self.request.POST.get('bn-section', 'ND').upper(),
+            'row': self.request.POST.get('bn-row', 'ND').upper(),
+            'seat': self.request.POST.get('bn-seat', 'ND').upper()
+        }
+        
+        if abonado != self.object.abonado or bono != self.object.ubicacion:
+            form.instance.abonado = abonado
+            form.instance.ubicacion = bono
+            self.object = form.save()
+            messages.success(self.request, 'Bono editado exitosamente')
+            if self.request.POST.get('sv-dw', None) is not None:
+                response_bn = generate_bonus([self.object])
+                return response_bn
+            elif self.request.POST.get('sv-qr', None) is not None:
+                response_qr = generate_qr(self.object)
+                return response_qr
+        else:
+            messages.warning(self.request, 'No se detectó nigún cambio en la información')
+        return HttpResponseRedirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse_lazy('editar', kwargs={'uuid': self.object.uuid})
+
+class Eliminar(DeleteView):
+    template_name = 'bonos/eliminar.html'
+    model = Bono
+    slug_field = 'uuid'
+    slug_url_kwarg = 'uuid'
+    success_url = reverse_lazy('listar')
+    
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, 'Bono eliminado exitosamente')
+        return super().delete(request, *args, **kwargs)

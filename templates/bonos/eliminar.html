@@ -1,0 +1,68 @@
+{% extends 'bonos/base.html' %}
+{% load generate_qr %}
+{% load static %}
+{% block head %}
+{{block.super}}
+<style>
+    .bonus {
+        background-color: #2ba17c;
+        color: white;
+    }
+</style>
+<script src="{% static 'app.js' %}" defer></script>
+{% endblock %}
+{% block main %}
+<div class="container mt-5 mb-5">
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.tags == 'success' %}
+    <div class="alert alert-success text-center" role="alert">
+        {{message|safe}}
+    </div>
+    {% elif message.tags == 'warning' %}
+    <div class="alert alert-warning text-center" role="alert">
+        {{message|safe}}
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    <div class="card shadow-sm border-0">
+        <h4 class="card-header bg-black text-white">Eliminar bono</h4>
+        <div class="card-body">
+            <br>
+            <form method="post">
+                {% csrf_token %}
+                <h3 class="text-center">¿Estás seguro(a) de eliminar este bono?</h3>
+                <br>
+                <div class="card mb-3 shadow border border-3 border-dark-subtle bonus"
+                    style="max-width: max-content; margin: 0 auto;">
+                    <div class="card-header">
+                        OLMECABONO 2023
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-start align-items-center">
+                            {% generate_qr object.folio %}
+                            <div class="ms-3">
+                                <h4 class="card-title bold"><b>{{object.abonado.name}}</b></h4>
+                                <span>Sección: <b>{{object.ubicacion.section}}</b></span>&nbsp;&nbsp;
+                                <span>Fila: <b>{{object.ubicacion.row}}</b></span>&nbsp;&nbsp;
+                                <span>Asiento: <b>{{object.ubicacion.seat}}</b></span>
+                                <br>
+                                <small>Registrado el {{object.fecha_reg}}</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <br>
+                <div class="text-center">
+                    <div class="btn-group text-center" role="group" aria-label="Basic example">
+                        <button type="submit" class="btn btn-secondary">Cancelar</button>
+                        <button type="submit" class="btn btn-danger" name="sv-dw">Sí, eliminar</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

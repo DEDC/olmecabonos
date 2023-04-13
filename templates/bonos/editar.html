@@ -1,0 +1,97 @@
+{% extends 'bonos/base.html' %}
+{% load static %}
+{% block head %}
+{{block.super}}
+<script src="{% static 'app.js' %}" defer></script>
+{% endblock %}
+{% block main %}
+<div class="container mt-5 mb-5">
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.tags == 'success' %}
+    <div class="alert alert-success text-center" role="alert">
+        {{message|safe}}
+    </div>
+    {% elif message.tags == 'warning' %}
+    <div class="alert alert-warning text-center" role="alert">
+        {{message|safe}}
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    <div class="card shadow-sm border-0">
+        <h4 class="card-header bg-black text-white">Editar bono</h4>
+        <div class="card-body">
+            <br>
+            <form method="post">
+                {% csrf_token %}
+                <h6 class="text-secondary">1- Información del abonado</h6>
+                <hr class="mt-0 border border-light border-1 opacity-100">
+                <div class="row">
+                    <div class="col-sm-12 col-lg-4">
+                        <div class="mb-3">
+                            <label for="bn-name" class="form-label">Nombre completo</label>
+                            <input type="text" class="form-control" id="bn-name" name="bn-name"
+                                value="{{object.abonado.name}}" required>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-lg-4">
+                        <div class="mb-3">
+                            <label for="bn-phone" class="form-label">Teléfono</label>
+                            <input type="text" class="form-control" id="bn-phone" name="bn-phone"
+                                value="{{object.abonado.phone}}" required>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-lg-4">
+                        <div class="mb-3">
+                            <label for="bn-email" class="form-label">Correo electrónico</label>
+                            <input type="text" class="form-control" id="bn-email" name="bn-email"
+                                value="{{object.abonado.email}}" required>
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <h6 class="text-secondary">2- Información del bono</h6>
+                <hr class="mt-0 border border-light border-1 opacity-100">
+                <div class="row">
+                    <div class="col-sm-12 col-lg-4">
+                        <div class="mb-3">
+                            <label for="bn-section" class="form-label">Sección</label>
+                            <input type="text" class="form-control" id="bn-section" name="bn-section"
+                                value="{{object.ubicacion.section}}" required>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-lg-4">
+                        <div class="mb-3">
+                            <label for="bn-row" class="form-label">Fila</label>
+                            <input type="text" class="form-control" id="bn-row" name="bn-row"
+                                value="{{object.ubicacion.row}}" required>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-lg-4">
+                        <div class="mb-3">
+                            <label for="bn-seat" class="form-label">Asiento</label>
+                            <input type="text" class="form-control" id="bn-seat" name="bn-seat"
+                                value="{{object.ubicacion.seat}}" required>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-lg-4">
+                        <div class="mb-3">
+                            <label for="bn-type" class="form-label">Tipo de bono</label>
+                            {{form.tipo}}
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <div class="text-center">
+                    <div class="btn-group text-center" role="group" aria-label="Basic example">
+                        <button type="submit" class="btn btn-success text-white">Solo Guardar</button>
+                        <button type="submit" class="btn btn-success text-white" name="sv-dw">Descargar Bono</button>
+                        <button type="submit" class="btn btn-success text-white" name="sv-qr">Descargar QR</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
