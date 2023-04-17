@@ -127,3 +127,5 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 
 AUTH_USER_MODEL = 'usuarios.Usuarios'
+
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 10240
