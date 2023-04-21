@@ -124,6 +124,8 @@ class CargarExcel(TemplateView):
             for row in ws.iter_rows(min_row=2):
                 abonado = {'name': row[0].value.title(), 'email': '', 'phone': ''}
                 bono = {'section': str(row[1].value).upper(), 'row': str(row[2].value).upper(), 'seat': str(row[3].value).upper()}
+                if row[5].value is not None:
+                    bono.update({'extra': str(row[5].value)})
                 objs.append(Bono(abonado=abonado, ubicacion=bono, tipo=row[4].value.lower()))
             cache.set('bonus_cache', objs)
         if request.POST.get('save') is not None:
