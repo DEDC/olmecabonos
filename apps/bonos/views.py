@@ -90,7 +90,7 @@ class Descargar(RedirectView):
             bonos = Bono.objects.filter(folio__in = bonus)
             if bonos.exists():
                 response = generate_bonus(bonos)
-                return response
+            return response
         except: pass
         return super().get(request, *args, **kwargs)
     
@@ -99,7 +99,12 @@ class Descargar(RedirectView):
         try:
             bonos = Bono.objects.filter(folio__in=bonus)
             if bonos.exists():
-                response = generate_bonus(bonos)
+                if 'dw-bn' in request.POST:
+                    print('from bonos')
+                    response = generate_bonus(bonos)
+                if 'dw-qr' in request.POST:
+                    print('from qrs')
+                    response = generate_qr(bonos)
                 return response
         except: pass
         return self.get(request, *args, **kwargs)
