@@ -6,7 +6,7 @@ from utils.models import ControlInfo
 
 class Bono(ControlInfo):
     class Meta:
-        ordering = ('abonado__name',)
+        ordering = ('abonado__name', 'fecha_reg')
     identifier = 'OMB'
     tipos = (
         ('abonado', 'Abonado'),
