@@ -28,9 +28,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 hold.classList.remove('border-warning')
                 hold.classList.add('border-warning')
             }
-            form.reset();
         }).catch(function (error) {
             console.error(error);
         })
+        form.reset();
     })
 })
