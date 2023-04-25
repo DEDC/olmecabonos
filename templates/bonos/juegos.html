@@ -1,0 +1,79 @@
+{% extends 'bonos/base.html' %}
+{% load static %}
+{% block head %}
+{{block.super}}
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+{% endblock %}
+{% block navbar %}{% endblock %}
+{% block main %}
+<div class="container mt-5 mb-5">
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.tags == 'success' %}
+    <div class="alert alert-success text-center" role="alert">
+        {{message|safe}}
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    <div class="p-4">
+        <a class="navbar-brand text-center d-block" href="{% url 'registro' %}">
+            <img src="{% static 'images/logo.png' %}" alt="DeBoleto">
+        </a>
+        <br><br>
+        <button type="button" class="btn green-btn text-white text-end d-block" data-bs-toggle="modal"
+            data-bs-target="#create">Crear partido</button>
+        <br>
+        <div class="card p-2 border-0 shadow-sm">
+            <div class="card-body">
+                <div class="container px-4">
+                    <div class="row gx-5">
+                        {% for obj in partidos %}
+                        <div class="col">
+                            <div class="p-3 border text-center"><a href="{% url 'lector' obj.uuid %}">{{obj.nombre}}</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<form method="post">
+    {% csrf_token %}
+    <div class="modal fade" id="create" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        {{ form.nombre.label_tag }}
+                        {{ form.nombre }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.fecha.label_tag }}
+                        {{ form.fecha }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.hora.label_tag }}
+                        {{ form.hora }}
+                    </div>
+                    <div class="mb-3">
+                        {{ form.lugar.label_tag }}
+                        {{ form.lugar }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{% endblock %}

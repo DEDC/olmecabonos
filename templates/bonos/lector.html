@@ -1,0 +1,48 @@
+{% extends 'bonos/base.html' %}
+{% load static %}
+{% block head %}
+{{block.super}}
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script src="{% static 'app.js' %}" defer></script>
+{% endblock %}
+{% block navbar %}{% endblock %}
+{% block main %}
+<div class="container mt-5 mb-5">
+    {% if messages %}
+    {% for message in messages %}
+    {% if message.tags == 'success' %}
+    <div class="alert alert-success text-center" role="alert">
+        {{message|safe}}
+    </div>
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    <div class="text-center p-4">
+        <a class="navbar-brand" href="{% url 'registro' %}">
+            <img src="{% static 'images/logo.png' %}" alt="DeBoleto">
+        </a>
+        <br><br><br>
+        <h1 class="text-muted">{{partido.nombre}}</h1>
+        <a class="btn btn-light btn-sm mt-2" href="{% url 'juegos' %}">Cambiar partido</a>
+        <br><br>
+        <div class="card p-2 border-0 shadow-sm">
+            <div class="card-body">
+                <form action="" id="check" method="post">
+                    <input type="hidden" name="partido" value="{{partido.uuid}}">
+                    <input class="form-control form-control-lg text-center" type="text" autofocus name="bonus">
+                </form>
+            </div>
+        </div>
+        <br><br>
+        <div class="card p-5 shadow-sm border border-5" id="hold">
+            <h4 id="ab-name"></h4>
+            <br>
+            <div class="d-flex justify-content-evenly">
+                <h5>Sección: <span id="ab-section" class="text-muted"></span></h5>
+                <h5>Fila: <span id="ab-row" class="text-muted"></span></h5>
+                <h5>Asiento: <span id="ab-seat" class="text-muted"></span></h5>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

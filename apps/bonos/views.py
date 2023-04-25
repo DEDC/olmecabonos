@@ -4,12 +4,14 @@ import datetime
 from django.views.generic import CreateView, ListView, RedirectView, TemplateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
 from django.db.models import Q
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, JsonResponse
 from django.core.cache import cache
 from django.contrib import messages
+from django.shortcuts import redirect
+from django.views.decorators.csrf import csrf_exempt
 # app bonos
-from apps.bonos.models import Bono
-from apps.bonos.forms import BonosForm
+from apps.bonos.models import Bono, Partidos, Asistencias
+from apps.bonos.forms import BonosForm, PartidosForm
 # utils
 from utils.bonos_pdf import generate_bonus, generate_qr
 # openpyxl
@@ -186,3 +188,46 @@ class Eliminar(DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, 'Bono eliminado exitosamente')
         return super().delete(request, *args, **kwargs)
+
+class Lector(TemplateView):
+    template_name = 'bonos/lector.html'
+    
+    def get(self, request, *args, **kwargs):
+        context = self.get_context_data(**kwargs)
+        try:
+            partido = Partidos.objects.get(uuid=kwargs.get('uuid'))
+        except Partidos.DoesNotExist:
+            return redirect('juegos')
+        context['partido'] = partido
+        return self.render_to_response(context)
+    
+class Juegos(CreateView):
+    template_name = 'bonos/juegos.html'
+    model = Partidos
+    form_class = PartidosForm
+    success_url = reverse_lazy('juegos')
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["partidos"] = Partidos.objects.all()
+        return context
+
+@csrf_exempt
+def check_bonus(request):
+    # request should be ajax and method should be GET.
+    if request.is_ajax and request.method == "POST":
+        try:
+            bonus = request.POST.get('bonus', '')
+            partido_txt = request.POST.get('partido', '')
+            bono = Bono.objects.get(folio__exact=bonus)
+            partido = Partidos.objects.get(uuid=partido_txt)
+            asis, created = Asistencias.objects.get_or_create(bono=bono, partido=partido)
+            response = {
+                'ubication': bono.ubicacion,
+                'person': bono.abonado,
+                'created': created
+            }
+            return JsonResponse(response, status = 200)
+        except Exception as e:
+            print(e)
+    return JsonResponse({}, status = 400)
