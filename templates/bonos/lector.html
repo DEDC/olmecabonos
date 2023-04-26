@@ -27,10 +27,10 @@
         <br><br>
         <div class="card p-2 border-0 shadow-sm">
             <div class="card-body">
-                <form action="" id="check" method="post">
-                    <input type="hidden" name="partido" value="{{partido.uuid}}">
-                    <input class="form-control form-control-lg text-center" type="text" autofocus name="bonus">
-                </form>
+                {% comment %} <form action="" id="check" method="post"> {% endcomment %}
+                    <input type="hidden" name="partido" value="{{partido.uuid}}" id="game">
+                    <input class="form-control form-control-lg text-center" type="text" autofocus name="bonus" id="bonus">
+                {% comment %} </form> {% endcomment %}
             </div>
         </div>
         <br><br>

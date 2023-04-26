@@ -1,5 +1,6 @@
 # Python
 import datetime
+import json
 # Django
 from django.views.generic import CreateView, ListView, RedirectView, TemplateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
@@ -216,9 +217,10 @@ class Juegos(CreateView):
 def check_bonus(request):
     # request should be ajax and method should be GET.
     if request.is_ajax and request.method == "POST":
+        data = json.loads(request.body)
         try:
-            bonus = request.POST.get('bonus', '')
-            partido_txt = request.POST.get('partido', '')
+            bonus = data.get('bonus', '')
+            partido_txt = data.get('partido', '')
             bono = Bono.objects.get(folio__exact=bonus)
             partido = Partidos.objects.get(uuid=partido_txt)
             asis, created = Asistencias.objects.get_or_create(bono=bono, partido=partido)
