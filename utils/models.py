@@ -15,7 +15,7 @@ class ControlInfo(models.Model):
     activo = models.BooleanField(default = True, editable = False)
 
     def save(self, *args, **kwargs):
-        self.identifier = '{}-{}'.format(self.identifier, str(self.uuid).upper()[:8])
+        self.identifier = '{}{}'.format(self.identifier, str(self.uuid).upper()[:8])
         self.folio = self.identifier
         super(ControlInfo, self).save(*args, **kwargs)
 
