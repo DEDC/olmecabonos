@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function () {
 })
 
 function clean_txt(txt) {
-    let txt_new = txt.replace('-', '').replace('\'', '');
+    let txt_new = txt.replace('-', '').replace('\'', '').replace('’', '');
     console.log(txt, txt_new)
     return txt_new
 }
