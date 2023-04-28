@@ -7,15 +7,17 @@ document.addEventListener('DOMContentLoaded', function () {
     let hold = document.querySelector('#hold')
     let input = document.querySelector('#bonus')
     let input2 = document.querySelector('#game')
+    let read = document.querySelector('#read')
 
     input.addEventListener('change', (e) => {
+        let folio = clean_txt(input.value)
         axios({
             method: 'post',
             url: '/check/bonus',
-            data: { bonus: clean_txt(input.value), partido: input2.value }
+            data: { bonus: folio, partido: input2.value }
         }).then(function (response) {
             let data = response.data;
-            name.textContent = data.person.name
+            name.textContent = data.person.name + ` (${folio})`
             row.textContent = data.ubication.row
             section.textContent = data.ubication.section
             seat.textContent = data.ubication.seat
@@ -34,6 +36,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // hold.classList.add('border-danger')
         })
         input.value = ''
+        read.textContent = folio
     })
 
     // form.addEventListener('submit', (e) => {
