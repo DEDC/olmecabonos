@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function () {
         axios({
             method: 'post',
             url: '/check/bonus',
-            data:{bonus: input.value, partido: input2.value}
+            data: { bonus: clean_txt(input.value), partido: input2.value }
         }).then(function (response) {
             let data = response.data;
             name.textContent = data.person.name
@@ -65,3 +65,9 @@ document.addEventListener('DOMContentLoaded', function () {
     //     form.reset();
     // })
 })
+
+function clean_txt(txt) {
+    let txt_new = txt.replace('-', '').replace('\'', '');
+    console.log(txt, txt_new)
+    return txt_new
+}
