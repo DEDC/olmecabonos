@@ -210,7 +210,7 @@ class Juegos(CreateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["partidos"] = Partidos.objects.annotate(count=Count('asistencias_partido', filter=Q(asistencias_partido__bono__tipo__in=['abonado', 'palco'])))
+        context["partidos"] = Partidos.objects.annotate(count=Count('asistencias_partido', filter=Q(asistencias_partido__bono__tipo__in=['abonado', 'palco']))).order_by('-fecha_reg')
         return context
 
 @csrf_exempt
