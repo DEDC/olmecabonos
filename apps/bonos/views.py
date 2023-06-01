@@ -4,7 +4,7 @@ import json
 # Django
 from django.views.generic import CreateView, ListView, RedirectView, TemplateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
-from django.db.models import Q
+from django.db.models import Q, Count
 from django.http import HttpResponseRedirect, JsonResponse
 from django.core.cache import cache
 from django.contrib import messages
@@ -210,7 +210,7 @@ class Juegos(CreateView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context["partidos"] = Partidos.objects.all()
+        context["partidos"] = Partidos.objects.annotate(count=Count('asistencias_partido', filter=Q(asistencias_partido__bono__tipo__in=['abonado', 'palco'])))
         return context
 
 @csrf_exempt

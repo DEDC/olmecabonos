@@ -31,7 +31,7 @@
                     <div class="row gx-5">
                         {% for obj in partidos %}
                         <div class="col">
-                            <div class="p-3 border text-center"><a href="{% url 'lector' obj.uuid %}">{{obj.nombre}}</a>
+                            <div class="p-3 border text-center"><a href="{% url 'lector' obj.uuid %}">{{obj.nombre}} ({{obj.count}})</a>
                             </div>
                         </div>
                         {% endfor %}
