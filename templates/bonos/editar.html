@@ -90,6 +90,7 @@
                         <div class="mb-3">
                             <label for="bn-payment-type" class="form-label">Tipo de pago</label>
                             <select class="form-select" id="bn-payment-type" name="bn-payment-type">
+                                <option>-------</option>
                                 <option value="cash" {% if object.pago.paytype == 'cash' %}selected{% endif %}>Efectivo</option>
                                 <option value="card" {% if object.pago.paytype == 'card' %}selected{% endif %}>Tarjeta</option>
                                 <option value="transfer" {% if object.pago.paytype == 'transfer' %}selected{% endif %}>Transferencia</option>
@@ -100,6 +101,7 @@
                         <div class="mb-3">
                             <label for="bn-payment-to" class="form-label">Pagado a</label>
                             <select class="form-select" id="bn-payment-to" name="bn-payment-to">
+                                <option>-------</option>
                                 <option value="olmecas" {% if object.pago.payto == 'olmecas' %}selected{% endif %}>Olmecas</option>
                                 <option value="deboleto" {% if object.pago.payto == 'deboleto' %}selected{% endif %}>DeBoleto</option>
                             </select>
