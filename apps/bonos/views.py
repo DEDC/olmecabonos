@@ -36,8 +36,16 @@ class Registrar(CreateView):
             'row': self.request.POST.get('bn-row', 'ND').upper(),
             'seat': self.request.POST.get('bn-seat', 'ND').upper()
         }
+        
+        pago = {
+            'paytype': self.request.POST.get('bn-payment-type', 'ND'),
+            'payto': self.request.POST.get('bn-payment-to', 'ND'),
+            'payamount': self.request.POST.get('bn-payment-amount', 'ND')
+        }
+        
         form.instance.abonado = abonado
         form.instance.ubicacion = bono
+        form.instance.pago = pago
         self.object = form.save()
         messages.success(self.request, 'Bono registrado exitosamente')
         if self.request.POST.get('sv-dw', None) is not None:
@@ -161,9 +169,16 @@ class Editar(UpdateView):
             'seat': self.request.POST.get('bn-seat', 'ND').upper()
         }
         
-        if abonado != self.object.abonado or bono != self.object.ubicacion:
+        pago = {
+            'paytype': self.request.POST.get('bn-payment-type', 'ND'),
+            'payto': self.request.POST.get('bn-payment-to', 'ND'),
+            'payamount': self.request.POST.get('bn-payment-amount', 'ND')
+        }
+        
+        if abonado != self.object.abonado or bono != self.object.ubicacion or pago != self.object.pago:
             form.instance.abonado = abonado
             form.instance.ubicacion = bono
+            form.instance.pago = pago
             self.object = form.save()
             messages.success(self.request, 'Bono editado exitosamente')
             if self.request.POST.get('sv-dw', None) is not None:

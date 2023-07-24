@@ -83,6 +83,36 @@
                     </div>
                 </div>
                 <br>
+                <h6 class="text-secondary">3- Información del pago</h6>
+                <hr class="mt-0 border border-light border-1 opacity-100">
+                <div class="row">
+                    <div class="col-sm-12 col-lg-4">
+                        <div class="mb-3">
+                            <label for="bn-payment-type" class="form-label">Tipo de pago</label>
+                            <select class="form-select" id="bn-payment-type" name="bn-payment-type">
+                                <option value="cash" {% if object.pago.paytype == 'cash' %}selected{% endif %}>Efectivo</option>
+                                <option value="card" {% if object.pago.paytype == 'card' %}selected{% endif %}>Tarjeta</option>
+                                <option value="transfer" {% if object.pago.paytype == 'transfer' %}selected{% endif %}>Transferencia</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-lg-4">
+                        <div class="mb-3">
+                            <label for="bn-payment-to" class="form-label">Pagado a</label>
+                            <select class="form-select" id="bn-payment-to" name="bn-payment-to">
+                                <option value="olmecas" {% if object.pago.payto == 'olmecas' %}selected{% endif %}>Olmecas</option>
+                                <option value="deboleto" {% if object.pago.payto == 'deboleto' %}selected{% endif %}>DeBoleto</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-sm-12 col-lg-4">
+                        <div class="mb-3">
+                            <label for="bn-payment-amount" class="form-label">Monto del pago</label>
+                            <input type="number" step=".01" class="form-control" id="bn-payment-amount" name="bn-payment-amount" value="{{object.pago.payamount}}" required>
+                        </div>
+                    </div>
+                </div>
+                <br>
                 <div class="text-center">
                     <div class="btn-group text-center" role="group" aria-label="Basic example">
                         <button type="submit" class="btn btn-success text-white">Solo Guardar</button>

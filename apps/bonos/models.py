@@ -25,6 +25,7 @@ class Bono(ControlInfo):
     tipo = models.CharField(choices=tipos, max_length=100, default='cortesia')
     abonado = JSONField(editable=False) #(nombre, teléfono, correo opcional)
     ubicacion = JSONField(editable=False) #(sección, fila, no. butaca)
+    pago = JSONField(editable=False, null=True) #(tipo, a quién, monto)
 
 class Partidos(ControlInfo):
     identifier = 'PTD'
