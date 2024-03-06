@@ -8,6 +8,15 @@
         background-color: #2ba17c;
         color: white;
     }
+
+    .card24{
+        background-color: #b0aeae !important;
+        color: #000000;
+    }
+
+    .card24>.card-header{
+        background-color: #999999 !important;
+    }
 </style>
 <script>
     document.addEventListener('DOMContentLoaded', () => {
@@ -115,7 +124,7 @@
         <div class="row">
             {% for obj in object_list %}
             <div class="col-lg-4 col-md-6 col-sm-12">
-                <div class="card mb-3 shadow border border-3 border-dark-subtle">
+                <div class="card {% if obj.fecha_reg.year == 2024 %}card24{% endif %} mb-3 shadow border border-3 border-dark-subtle">
                     <div class="card-header">
                         <input name="bonus" class="form-check-input me-2" type="checkbox" id="{{obj.folio}}" value="{{obj.folio}}">
                         <label class="form-check-label" for="{{obj.folio}}">{{obj.folio}}</label>

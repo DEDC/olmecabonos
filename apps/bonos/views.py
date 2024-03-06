@@ -59,7 +59,7 @@ class Registrar(CreateView):
 class Listar(ListView):
     model = Bono
     template_name = 'bonos/listado.html'
-    paginate_by = 300
+    paginate_by = 200
     
     def get_queryset(self):
         q = self.request.GET.get('q', '')
@@ -78,6 +78,8 @@ class Listar(ListView):
                     bonus = bonus.filter(fecha_reg__date__range=[datetime.datetime.fromisoformat(dstart).date(), datetime.datetime.fromisoformat(dstart).date()])
             except:
                 pass
+        else:
+            bonus = bonus.filter(fecha_reg__year=2024)
         self.queryset = bonus
         return bonus
     
@@ -135,8 +137,8 @@ class CargarExcel(TemplateView):
             for row in ws.iter_rows(min_row=2):
                 abonado = {'name': row[0].value.title(), 'email': '', 'phone': ''}
                 bono = {'section': str(row[1].value).upper(), 'row': str(row[2].value).upper(), 'seat': str(row[3].value).upper()}
-                if row[5].value is not None:
-                    bono.update({'extra': str(row[5].value)})
+                # if row[5].value is not None:
+                #     bono.update({'extra': str(row[5].value)})
                 objs.append(Bono(abonado=abonado, ubicacion=bono, tipo=row[4].value.lower()))
             cache.set('bonus_cache', objs)
         if request.POST.get('save') is not None:
