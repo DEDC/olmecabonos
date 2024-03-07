@@ -84,9 +84,12 @@ class Listar(ListView):
         return bonus
     
     def get_context_data(self):
+        type_ = ''
+        for t in self.request.GET.getlist('type', []):
+            type_+='&type={}'.format(t)
         context = {
             'q': self.request.GET.get('q', ''), 
-            'type': self.request.GET.getlist('type', []), 
+            'type': type_, 
             'total': self.queryset.count(),
             'start': self.request.GET.get('start', ''),
             'end': self.request.GET.get('end', '')
