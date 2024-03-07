@@ -89,7 +89,7 @@ def generate_bonus(bonus):
             img = Image.open("static/bonus/bonus_24.png", 'r')
             bonus = ImageDraw.Draw(img)
             avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
-            max_char_count = int(img.size[0] * 1 / avg_char_width)
+            max_char_count = int(img.size[0] * .70 / avg_char_width)
             text = textwrap.fill(text=bonus_name, width=max_char_count)
             if len(text.splitlines()) > 1:
                 bonus.text(xy=(150, img.size[1] / 1.53), text=text, font=font_short, fill='#000000')
