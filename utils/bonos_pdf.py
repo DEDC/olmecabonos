@@ -92,9 +92,9 @@ def generate_bonus(bonus):
             max_char_count = int(img.size[0] * .90 / avg_char_width)
             text = textwrap.fill(text=bonus_name, width=max_char_count)
             if len(text.splitlines()) > 1:
-                bonus.text(xy=(150, img.size[1] / 1.53), text=text, font=font_short, fill='#000000')
+                bonus.text(xy=(60, img.size[1] / 1.53), text=text, font=font_short, fill='#000000')
             else:
-                bonus.text(xy=(150, img.size[1] / 1.53), text=text, font=font, fill='#000000')
+                bonus.text(xy=(60, img.size[1] / 1.53), text=text, font=font, fill='#000000')
             bonus_label1 = 'SECCIÓN:'
             w, h = bonus.textsize(bonus_label1, font=font_label)
             bonus.text((60, 739), bonus_label1, fill="black", font=font_label)
