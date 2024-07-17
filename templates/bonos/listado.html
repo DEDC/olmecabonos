@@ -82,6 +82,10 @@
             <label class="form-check-label" for="palco">Palco</label>
         </div>
         <div class="form-check form-check-inline">
+            <input name="type" class="form-check-input" type="checkbox" id="palco_jaguares" value="palco_jaguares" {% if 'palco_jaguares' in type %}checked{% endif %}>
+            <label class="form-check-label" for="palco_jaguares">Palco Jaguares</label>
+        </div>
+        <div class="form-check form-check-inline">
             <input name="type" class="form-check-input" type="checkbox" id="seguridad" value="seguridad" {% if 'seguridad' in type %}checked{% endif %}>
             <label class="form-check-label" for="seguridad">Seguridad</label>
         </div>
@@ -104,6 +108,22 @@
         <div class="form-check form-check-inline">
             <input name="type" class="form-check-input" type="checkbox" id="tarjeton" value="tarjeton" {% if 'tarjeton' in type %}checked{% endif %}>
             <label class="form-check-label" for="tarjeton">Tarjetón Est.</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input name="type" class="form-check-input" type="checkbox" id="jaguares_cabecera_norte" value="jaguares_cabecera_norte" {% if 'jaguares_cabecera_norte' in type %}checked{% endif %}>
+            <label class="form-check-label" for="tarjeton">Cabecera Norte Jaguares.</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input name="type" class="form-check-input" type="checkbox" id="jaguares_cabecera_sur" value="jaguares_cabecera_sur" {% if 'jaguares_cabecera_sur' in type %}checked{% endif %}>
+            <label class="form-check-label" for="tarjeton">Cabecera Sur Jaguares.</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input name="type" class="form-check-input" type="checkbox" id="jaguares_preferente" value="jaguares_preferente" {% if 'jaguares_preferente' in type %}checked{% endif %}>
+            <label class="form-check-label" for="tarjeton">Preferentes Jaguares.</label>
+        </div>
+        <div class="form-check form-check-inline">
+            <input name="type" class="form-check-input" type="checkbox" id="jaguares_sombra" value="jaguares_sombra" {% if 'jaguares_sombra' in type %}checked{% endif %}>
+            <label class="form-check-label" for="tarjeton">Sombra Jaguares.</label>
         </div>
     </form>
     <hr>

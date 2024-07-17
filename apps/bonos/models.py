@@ -4,6 +4,7 @@ from django.contrib.postgres.fields import JSONField
 # utils
 from utils.models import ControlInfo
 
+
 class Bono(ControlInfo):
     class Meta:
         ordering = ('abonado__name', 'fecha_reg')
@@ -14,18 +15,24 @@ class Bono(ControlInfo):
         ('vitalicio', 'Vitalicio'),
         ('cortesia', 'Cortesía'),
         ('palco', 'Palco'),
+        ('jaguares_palco', 'Palco Jaguares'),
         ('seguridad', 'Seguridad'),
         ('operativo', 'Operativo'),
         ('network', 'Network'),
         ('directiva', 'Directiva'),
         ('admin', 'Administración'),
         ('tarjeton', 'Tarjetón Est'),
-        ('zona_comercial', 'Zona Comercial')
+        ('zona_comercial', 'Zona Comercial'),
+        ('jaguares_cabecera_norte', 'Cabecera Norte Jaguares'),
+        ('jaguares_cabecera_sur', 'Cabecera Sur Jaguares'),
+        ('jaguares_preferente', 'Preferentes Jaguares'),
+        ('jaguares_sombra', 'Sombra Jaguares'),
     )
     tipo = models.CharField(choices=tipos, max_length=100, default='cortesia')
     abonado = JSONField(editable=False) #(nombre, teléfono, correo opcional)
     ubicacion = JSONField(editable=False) #(sección, fila, no. butaca)
     pago = JSONField(editable=False, null=True) #(tipo, a quién, monto)
+
 
 class Partidos(ControlInfo):
     identifier = 'PTD'
@@ -33,6 +40,7 @@ class Partidos(ControlInfo):
     fecha = models.DateField(null=True)
     hora = models.TimeField(null=True)
     lugar = models.CharField(max_length=100, choices=(('centenario', 'Estadio Centenario 27 de Febrero'),))
+
 
 class Asistencias(ControlInfo):
     identifier = 'ASIS'

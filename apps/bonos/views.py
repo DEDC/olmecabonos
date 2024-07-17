@@ -18,6 +18,7 @@ from utils.bonos_pdf import generate_bonus, generate_qr
 # openpyxl
 from openpyxl import load_workbook
 
+
 class Registrar(CreateView):
     model = Bono
     template_name = 'bonos/registro.html'
@@ -42,7 +43,11 @@ class Registrar(CreateView):
             'payto': self.request.POST.get('bn-payment-to', 'ND'),
             'payamount': self.request.POST.get('bn-payment-amount', 'ND')
         }
-        
+        bonos = Bono.objects.filter(ubicacion=bono, tipo=self.request.POST.get('tipo'))
+        if bonos:
+            messages.error(self.request, 'El asiento ya ha sido reservado con anterioridad')
+            return HttpResponseRedirect(self.success_url)
+
         form.instance.abonado = abonado
         form.instance.ubicacion = bono
         form.instance.pago = pago
@@ -55,6 +60,7 @@ class Registrar(CreateView):
             response_qr = generate_qr(self.object)
             return response_qr
         return HttpResponseRedirect(self.get_success_url())
+
 
 class Listar(ListView):
     model = Bono
@@ -96,6 +102,7 @@ class Listar(ListView):
         }
         return super().get_context_data(**context)
 
+
 class Descargar(RedirectView):
     url = reverse_lazy('listar')
     
@@ -106,7 +113,8 @@ class Descargar(RedirectView):
             if bonos.exists():
                 response = generate_bonus(bonos)
             return response
-        except: pass
+        except Exception as e:
+            print(e)
         return super().get(request, *args, **kwargs)
     
     def post(self, request, *args, **kwargs):
@@ -121,6 +129,7 @@ class Descargar(RedirectView):
                 return response
         except: pass
         return self.get(request, *args, **kwargs)
+
 
 class CargarExcel(TemplateView):
     template_name = 'bonos/carga_excel.html'
@@ -154,6 +163,7 @@ class CargarExcel(TemplateView):
                 cache.set('bonus_cache', None)
         context['bonus'] = cache.get('bonus_cache')
         return self.render_to_response(context)
+
 
 class Editar(UpdateView):
     template_name = 'bonos/editar.html'
@@ -199,6 +209,7 @@ class Editar(UpdateView):
     def get_success_url(self):
         return reverse_lazy('editar', kwargs={'uuid': self.object.uuid})
 
+
 class Eliminar(DeleteView):
     template_name = 'bonos/eliminar.html'
     model = Bono
@@ -209,6 +220,7 @@ class Eliminar(DeleteView):
     def delete(self, request, *args, **kwargs):
         messages.success(self.request, 'Bono eliminado exitosamente')
         return super().delete(request, *args, **kwargs)
+
 
 class Lector(TemplateView):
     template_name = 'bonos/lector.html'
@@ -221,7 +233,8 @@ class Lector(TemplateView):
             return redirect('juegos')
         context['partido'] = partido
         return self.render_to_response(context)
-    
+
+
 class Juegos(CreateView):
     template_name = 'bonos/juegos.html'
     model = Partidos
@@ -232,6 +245,7 @@ class Juegos(CreateView):
         context = super().get_context_data(**kwargs)
         context["partidos"] = Partidos.objects.annotate(count=Count('asistencias_partido', filter=Q(asistencias_partido__bono__tipo__in=['abonado', 'palco']))).order_by('-fecha_reg')
         return context
+
 
 @csrf_exempt
 def check_bonus(request):

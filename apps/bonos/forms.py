@@ -3,6 +3,7 @@ from django import forms
 # app bonos
 from .models import Bono, Partidos
 
+
 class BonosForm(forms.ModelForm):
     class Meta:
         model = Bono
@@ -11,7 +12,8 @@ class BonosForm(forms.ModelForm):
         widgets = {
             'tipo': forms.Select(attrs={'class': 'form-select'})
         }
-    
+
+
 class PartidosForm(forms.ModelForm):
     class Meta:
         model = Partidos

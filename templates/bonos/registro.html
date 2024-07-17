@@ -8,11 +8,16 @@
 <div class="container mt-5 mb-5">
     {% if messages %}
     {% for message in messages %}
-    {% if message.tags == 'success' %}
-    <div class="alert alert-success text-center" role="alert">
-        {{message|safe}}
-    </div>
-    {% endif %}
+        {% if message.tags == 'success' %}
+        <div class="alert alert-success text-center" role="alert">
+            {{message|safe}}
+        </div>
+        {% endif %}
+        {% if message.tags == 'error' %}
+        <div class="alert alert-danger text-center" role="alert">
+            {{message|safe}}
+        </div>
+        {% endif %}
     {% endfor %}
     {% endif %}
     <div class="card shadow-sm border-0">
@@ -74,6 +79,7 @@
                                 <option value="vitalicio">Vitalicio</option>
                                 <option value="cortesia">Cortesía</option>
                                 <option value="palco">Palco</option>
+                                <option value="jaguares_palco">Palco Jaguares</option>
                                 <option value="seguridad">Seguridad</option>
                                 <option value="operativo">Operativo</option>
                                 <option value="network">Network</option>
@@ -81,6 +87,10 @@
                                 <option value="admin">Administración</option>
                                 <option value="tarjeton">Tarjetón Est.</option>
                                 <option value="zona_comercial">Zona Comercial</option>
+                                <option value="jaguares_cabecera_norte">Cabecera Norte Jaguares</option>
+                                <option value="jaguares_cabecera_sur">Cabecera Sur Jaguares</option>
+                                <option value="jaguares_preferente">Preferentes Jaguares</option>
+                                <option value="jaguares_sombra">Sombra Jaguares</option>
                             </select>
                         </div>
                     </div>
@@ -105,6 +115,7 @@
                             <select class="form-select" id="bn-payment-to" name="bn-payment-to">
                                 <option value="olmecas">Olmecas</option>
                                 <option value="deboleto">DeBoleto</option>
+                                <option value="jaguares">Club Jaguares</option>
                             </select>
                         </div>
                     </div>

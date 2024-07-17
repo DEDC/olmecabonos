@@ -16,7 +16,8 @@ import qrcode
 #         self.drawer = drawer
 
 # class DrawBonous:
-    
+
+
 def generate_bonus_server(bonus):
     zf = zipfile.ZipFile('BONOS.zip', 'w')
     W, H = (638,1012)
@@ -72,6 +73,7 @@ def generate_bonus_server(bonus):
     zf.close()
     # response = HttpResponse(b2.getvalue(), content_type = 'application/application/octet-stream')
     # response['Content-Disposition'] = 'attachment; filename=BONOS.zip'
+
 
 def generate_bonus(bonus):
     b2 = io.BytesIO()
@@ -138,42 +140,111 @@ def generate_bonus(bonus):
             W, H = (638,1012)
             font = ImageFont.truetype('static/fonts/Oswald-DemiBold.ttf', 47)
             font_short = ImageFont.truetype('static/fonts/Oswald-DemiBold.ttf', 32)
+            font_short_medium = ImageFont.truetype('static/fonts/Oswald-DemiBold.ttf', 28)
+            font_short_small = ImageFont.truetype('static/fonts/Oswald-DemiBold.ttf', 22)
             font_label = ImageFont.truetype('static/fonts/Oswald-DemiBold.ttf', 26)
+            font_label_small = ImageFont.truetype('static/fonts/Oswald-DemiBold.ttf', 18)
             font_label_v2 = ImageFont.truetype('static/fonts/Oswald-DemiBold.ttf', 76)
             # regular-v1--------------
-            img = Image.open("static/bonus/bonus_24.png", 'r')
+            img = None
+            if obj.tipo.startswith("jaguares"):
+                img = Image.open("static/bonus/{}.png".format(obj.tipo), 'r')
+            else:
+                img = Image.open("static/bonus/bonus_24.png", 'r')
+
+            if img.mode == "CMYK":
+                img = img.convert("RGB")
+
             bonus = ImageDraw.Draw(img)
             avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
             max_char_count = int(img.size[0] * .90 / avg_char_width)
             text = textwrap.fill(text=bonus_name, width=max_char_count)
-            if len(text.splitlines()) > 1:
-                bonus.text(xy=(60, img.size[1] / 1.53), text=text, font=font_short, fill='#000000')
+
+            if obj.tipo.startswith("jaguares"):
+                if obj.tipo == "jaguares_sombra":
+                    if len(text.splitlines()) > 1:
+                        bonus.text(xy=(120, img.size[1] / 1.45), text=text.replace("\n", " "), font=font_short_medium, fill='#000000')
+                    else:
+                        bonus.text(xy=(120, img.size[1] / 1.53), text=text.replace("\n", " "), font=font_short_medium, fill='#000000')
+
+                    bonus_section = obj.ubicacion['section']
+                    bonus.text((190, 800), bonus_section, fill="#056b3d", font=font_label_small)
+
+                    bonus_row = obj.ubicacion['row']
+                    bonus.text((340, 800), bonus_row, fill="#056b3d", font=font_label_small)
+
+                    bonus_seat = obj.ubicacion['seat']
+                    bonus.text((530, 800), bonus_seat, fill="#056b3d", font=font_label_small)
+                elif obj.tipo == "jaguares_palco":
+                    if len(text.splitlines()) > 1:
+                        bonus.text(xy=(120, img.size[1] / 1.45), text=text.replace("\n", " "), font=font_short_medium, fill='#000000')
+                    else:
+                        bonus.text(xy=(120, img.size[1] / 1.53), text=text.replace("\n", " "), font=font, fill='#000000')
+
+                    bonus_row = obj.ubicacion['section']
+                    bonus.text((360, 790), bonus_row, fill="#056b3d", font=font_label_small)
+
+                else:
+                    if len(text.splitlines()) > 1:
+                        bonus.text(xy=(120, img.size[1] / 1.45), text=text.replace("\n", " "), font=font_short_small,
+                                   fill='#000000')
+                    else:
+                        bonus.text(xy=(120, img.size[1] / 1.53), text=text.replace("\n", " "), font=font, fill='#000000')
+
+                    bonus_label1 = 'SECCIÓN:'
+                    w, h = bonus.textsize(bonus_label1, font=font_label_small)
+                    bonus.text((110, 739), bonus_label1, fill="black", font=font_label_small)
+                    bonus_section = obj.ubicacion['section']
+                    w, h = bonus.textsize(bonus_section, font=font_label_small)
+                    bonus.text((180, 739), bonus_section, fill="#056b3d", font=font_label_small)
+
+                    bonus_label2 = 'FILA:'
+                    w, h = bonus.textsize(bonus_label2, font=font_label_small)
+                    bonus.text((300, 739), bonus_label2, fill="black", font=font_label_small)
+                    bonus_row = obj.ubicacion['row']
+                    w, h = bonus.textsize(bonus_row, font=font_label_small)
+                    bonus.text((340, 739), bonus_row, fill="#056b3d", font=font_label_small)
+
+                    bonus_label3 = 'ASIENTO:'
+                    w, h = bonus.textsize(bonus_label3, font=font_label_small)
+                    bonus.text((400, 739), bonus_label3, fill="black", font=font_label_small)
+                    bonus_seat = obj.ubicacion['seat']
+                    w, h = bonus.textsize(bonus_seat, font=font_label_small)
+                    bonus.text((470, 739), bonus_seat, fill="#056b3d", font=font_label_small)
+                    # QR
+                qr_img = qrcode.make(obj.folio, border=0, box_size=12)
+                qr_w, qr_h = qr_img.size
+                offset = (205, 355)
             else:
-                bonus.text(xy=(60, img.size[1] / 1.53), text=text, font=font, fill='#000000')
-            bonus_label1 = 'SECCIÓN:'
-            w, h = bonus.textsize(bonus_label1, font=font_label)
-            bonus.text((60, 739), bonus_label1, fill="black", font=font_label)
-            bonus_section = obj.ubicacion['section']
-            w, h = bonus.textsize(bonus_section, font=font_label)
-            bonus.text((160, 739), bonus_section, fill="#056b3d", font=font_label)
-            
-            bonus_label2 = 'FILA:'
-            w, h = bonus.textsize(bonus_label2, font=font_label)
-            bonus.text((280+5, 739), bonus_label2, fill="black", font=font_label)
-            bonus_row = obj.ubicacion['row']
-            w, h = bonus.textsize(bonus_row, font=font_label)
-            bonus.text((332+5, 739), bonus_row, fill="#056b3d", font=font_label)
-            
-            bonus_label3 = 'ASIENTO:'
-            w, h = bonus.textsize(bonus_label3, font=font_label)
-            bonus.text((400+50, 739), bonus_label3, fill="black", font=font_label)
-            bonus_seat = obj.ubicacion['seat']
-            w, h = bonus.textsize(bonus_seat, font=font_label)
-            bonus.text((497+50, 739), bonus_seat, fill="#056b3d", font=font_label)
-            # QR
-            qr_img = qrcode.make(obj.folio, border=0, box_size=15)
-            qr_w, qr_h = qr_img.size
-            offset = (164, 264)
+                if len(text.splitlines()) > 1:
+                    bonus.text(xy=(90, img.size[1] / 1.45), text=text, font=font_short, fill='#000000')
+                else:
+                    bonus.text(xy=(60, img.size[1] / 1.53), text=text, font=font, fill='#000000')
+
+                bonus_label1 = 'SECCIÓN:'
+                w, h = bonus.textsize(bonus_label1, font=font_label)
+                bonus.text((60, 739), bonus_label1, fill="black", font=font_label)
+                bonus_section = obj.ubicacion['section']
+                w, h = bonus.textsize(bonus_section, font=font_label)
+                bonus.text((160, 739), bonus_section, fill="#056b3d", font=font_label)
+
+                bonus_label2 = 'FILA:'
+                w, h = bonus.textsize(bonus_label2, font=font_label)
+                bonus.text((280+5, 739), bonus_label2, fill="black", font=font_label)
+                bonus_row = obj.ubicacion['row']
+                w, h = bonus.textsize(bonus_row, font=font_label)
+                bonus.text((332+5, 739), bonus_row, fill="#056b3d", font=font_label)
+
+                bonus_label3 = 'ASIENTO:'
+                w, h = bonus.textsize(bonus_label3, font=font_label)
+                bonus.text((400+50, 739), bonus_label3, fill="black", font=font_label)
+                bonus_seat = obj.ubicacion['seat']
+                w, h = bonus.textsize(bonus_seat, font=font_label)
+                bonus.text((497+50, 739), bonus_seat, fill="#056b3d", font=font_label)
+                # QR
+                qr_img = qrcode.make(obj.folio, border=0, box_size=15)
+                qr_w, qr_h = qr_img.size
+                offset = (164, 264)
         img.paste(qr_img, offset)
         img.save(b1, 'PNG', quality=100)
         images.append(b1)
@@ -189,6 +260,7 @@ def generate_bonus(bonus):
         response['Content-Disposition'] = 'attachment; filename={}'.format(b1.name)
         b1.close()
     return response
+
 
 def generate_qr(bonus):
     b2 = io.BytesIO()
