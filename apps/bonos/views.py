@@ -65,7 +65,7 @@ class Registrar(CreateView):
 class Listar(ListView):
     model = Bono
     template_name = 'bonos/listado.html'
-    paginate_by = 200
+    paginate_by = 50
     
     def get_queryset(self):
         q = self.request.GET.get('q', '')

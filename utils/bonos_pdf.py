@@ -165,7 +165,7 @@ def generate_bonus(bonus):
                     if len(text.splitlines()) > 1:
                         bonus.text(xy=(120, img.size[1] / 1.45), text=text.replace("\n", " "), font=font_short_medium, fill='#000000')
                     else:
-                        bonus.text(xy=(120, img.size[1] / 1.53), text=text.replace("\n", " "), font=font_short_medium, fill='#000000')
+                        bonus.text(xy=(120, img.size[1] / 1.45), text=text.replace("\n", " "), font=font_short_medium, fill='#000000')
 
                     bonus_section = obj.ubicacion['section']
                     bonus.text((190, 800), bonus_section, fill="#056b3d", font=font_label_small)
@@ -179,7 +179,7 @@ def generate_bonus(bonus):
                     if len(text.splitlines()) > 1:
                         bonus.text(xy=(120, img.size[1] / 1.45), text=text.replace("\n", " "), font=font_short_medium, fill='#000000')
                     else:
-                        bonus.text(xy=(120, img.size[1] / 1.53), text=text.replace("\n", " "), font=font, fill='#000000')
+                        bonus.text(xy=(120, img.size[1] / 1.45), text=text.replace("\n", " "), font=font_short_medium, fill='#000000')
 
                     bonus_row = obj.ubicacion['section']
                     bonus.text((360, 790), bonus_row, fill="#056b3d", font=font_label_small)
@@ -189,7 +189,7 @@ def generate_bonus(bonus):
                         bonus.text(xy=(120, img.size[1] / 1.45), text=text.replace("\n", " "), font=font_short_small,
                                    fill='#000000')
                     else:
-                        bonus.text(xy=(120, img.size[1] / 1.53), text=text.replace("\n", " "), font=font, fill='#000000')
+                        bonus.text(xy=(120, img.size[1] / 1.45), text=text.replace("\n", " "), font=font_short_small, fill='#000000')
 
                     bonus_label1 = 'SECCIÓN:'
                     w, h = bonus.textsize(bonus_label1, font=font_label_small)
@@ -219,7 +219,7 @@ def generate_bonus(bonus):
                 if len(text.splitlines()) > 1:
                     bonus.text(xy=(90, img.size[1] / 1.45), text=text, font=font_short, fill='#000000')
                 else:
-                    bonus.text(xy=(60, img.size[1] / 1.53), text=text, font=font, fill='#000000')
+                    bonus.text(xy=(60, img.size[1] / 1.53), text=text, font=font_short, fill='#000000')
 
                 bonus_label1 = 'SECCIÓN:'
                 w, h = bonus.textsize(bonus_label1, font=font_label)
