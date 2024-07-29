@@ -129,14 +129,14 @@ def generate_pdf(file_front, file_back, bono: Bono):
         qr_size = 3
         qr_x = 48
         pdf.setFont("Helvetica-Bold", 7)
-        pdf.drawCentredString(text_x+10, 68, bonus_name)
+        pdf.drawCentredString(text_x + 10, 68, bonus_name)
         bonus_section = bono.ubicacion['section']
         pdf.setFont("Helvetica-Bold", 6)
         pdf.setFillColor("#056b3d")
         pdf.drawCentredString(50, 50, bonus_section)
 
         bonus_row = bono.ubicacion['row']
-        pdf.drawCentredString(65 + 17, 50, bonus_row)
+        pdf.drawString(80, 50, bonus_row)
 
         bonus_seat = bono.ubicacion['seat']
         pdf.drawCentredString(65 + 64, 50, bonus_seat)
@@ -149,22 +149,22 @@ def generate_pdf(file_front, file_back, bono: Bono):
             text_x += 8
 
         pdf.setFont("Helvetica-Bold", 7)
-        pdf.drawCentredString(text_x, 67, bonus_name)
+        pdf.drawString(30, 67, bonus_name)
         bonus_row = bono.ubicacion['section']
         pdf.setFont("Helvetica-Bold", 6)
         pdf.setFillColor("#056b3d")
         pdf.drawCentredString(87, 48, bonus_row)
     else:
-        pdf.drawCentredString(text_x, 71, bonus_name)
+        pdf.drawString(26, 71, bonus_name)
 
-        bonus_label1 = 'SECCIÓN:'
-        pdf.setFont("Helvetica-Bold", 6)
+        bonus_label1 = 'SECC:'
+        pdf.setFont("Helvetica-Bold", 5)
         pdf.setFillColor(colors.black)
-        pdf.drawCentredString(40, 64, bonus_label1)
+        pdf.drawCentredString(34, 64, bonus_label1)
 
         bonus_section = bono.ubicacion['section']
         pdf.setFillColor("#056b3d")
-        pdf.drawCentredString(60, 64, bonus_section)
+        pdf.drawCentredString(54, 64, bonus_section)
 
         bonus_label2 = 'FILA:'
         pdf.setFillColor(colors.black)
