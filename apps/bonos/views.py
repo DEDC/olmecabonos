@@ -288,7 +288,7 @@ class GenerateExcelApiView(LoginRequiredMixin, APIView):
             bonos_list = bonos_list.filter(fecha_reg__lte=self.request.GET.get('stop'))
 
         if self.request.GET.get('type'):
-            bonos_list = bonos_list.filter(tipo__in=self.request.GET.getlist('type'))
+            bonos_list = bonos_list.filter(tipo__in=self.request.GET.get('type').split(','))
 
         data = []
 
