@@ -1,6 +1,8 @@
 # Python
 import datetime
 import json
+
+from django.contrib.auth.mixins import LoginRequiredMixin
 # Django
 from django.views.generic import CreateView, ListView, RedirectView, TemplateView, UpdateView, DeleteView
 from django.urls import reverse_lazy
@@ -10,6 +12,8 @@ from django.core.cache import cache
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
+from rest_framework.views import APIView
+
 # app bonos
 from apps.bonos.models import Bono, Partidos, Asistencias
 from apps.bonos.forms import BonosForm, PartidosForm
@@ -17,9 +21,12 @@ from apps.bonos.forms import BonosForm, PartidosForm
 from utils.bonos_pdf import generate_bonus, generate_qr
 # openpyxl
 from openpyxl import load_workbook
+from django.http import HttpResponse
+import pandas as pd
+from io import BytesIO
 
 
-class Registrar(CreateView):
+class Registrar(LoginRequiredMixin, CreateView):
     model = Bono
     template_name = 'bonos/registro.html'
     form_class = BonosForm
@@ -62,7 +69,7 @@ class Registrar(CreateView):
         return HttpResponseRedirect(self.get_success_url())
 
 
-class Listar(ListView):
+class Listar(LoginRequiredMixin, ListView):
     model = Bono
     template_name = 'bonos/listado.html'
     paginate_by = 50
@@ -103,7 +110,7 @@ class Listar(ListView):
         return super().get_context_data(**context)
 
 
-class Descargar(RedirectView):
+class Descargar(LoginRequiredMixin, RedirectView):
     url = reverse_lazy('listar')
     
     def get(self, request, *args, **kwargs):
@@ -131,7 +138,7 @@ class Descargar(RedirectView):
         return self.get(request, *args, **kwargs)
 
 
-class CargarExcel(TemplateView):
+class CargarExcel(LoginRequiredMixin, TemplateView):
     template_name = 'bonos/carga_excel.html'
     
     def get(self, request, *args, **kwargs):
@@ -165,7 +172,7 @@ class CargarExcel(TemplateView):
         return self.render_to_response(context)
 
 
-class Editar(UpdateView):
+class Editar(LoginRequiredMixin, UpdateView):
     template_name = 'bonos/editar.html'
     model = Bono
     form_class = BonosForm
@@ -210,7 +217,7 @@ class Editar(UpdateView):
         return reverse_lazy('editar', kwargs={'uuid': self.object.uuid})
 
 
-class Eliminar(DeleteView):
+class Eliminar(LoginRequiredMixin, DeleteView):
     template_name = 'bonos/eliminar.html'
     model = Bono
     slug_field = 'uuid'
@@ -222,7 +229,7 @@ class Eliminar(DeleteView):
         return super().delete(request, *args, **kwargs)
 
 
-class Lector(TemplateView):
+class Lector(LoginRequiredMixin, TemplateView):
     template_name = 'bonos/lector.html'
     
     def get(self, request, *args, **kwargs):
@@ -235,7 +242,7 @@ class Lector(TemplateView):
         return self.render_to_response(context)
 
 
-class Juegos(CreateView):
+class Juegos(LoginRequiredMixin, CreateView):
     template_name = 'bonos/juegos.html'
     model = Partidos
     form_class = PartidosForm
@@ -267,3 +274,52 @@ def check_bonus(request):
         except Exception as e:
             print(e)
     return JsonResponse({}, status = 400)
+
+
+class GenerateExcelApiView(LoginRequiredMixin, APIView):
+    def get(self, request, *args, **kwargs):
+        # Obtener todos los datos del modelo Person
+        bonos_list = Bono.objects.all()
+
+        if self.request.GET.get('start'):
+            bonos_list = bonos_list.filter(fecha_reg__gte=self.request.GET.get('start'))
+
+        if self.request.GET.get('stop'):
+            bonos_list = bonos_list.filter(fecha_reg__lte=self.request.GET.get('stop'))
+
+        if self.request.GET.get('type'):
+            bonos_list = bonos_list.filter(tipo__in=self.request.GET.getlist('type'))
+
+        data = []
+
+        for bono in bonos_list:
+            data.append({
+                "folio": bono.folio,
+                "tipo": bono.tipo,
+                "nombre": bono.abonado.get("name"),
+                "seccion": bono.ubicacion.get("section"),
+                "fila": bono.ubicacion.get("row"),
+                "asiento": bono.ubicacion.get("seat"),
+                "tipo_pago": bono.pago.get("paytype"),
+                "pago": bono.pago.get("payamount"),
+            })
+
+        # Crear un DataFrame de pandas con los datos
+        df = pd.DataFrame(data)
+
+        # Crear un buffer en memoria para guardar el archivo Excel
+        excel_buffer = BytesIO()
+
+        # Guardar el DataFrame en el buffer como un archivo Excel
+        with pd.ExcelWriter(excel_buffer, engine='openpyxl') as writer:
+            df.to_excel(writer, index=False, sheet_name='Bonos')
+
+        # Mover el cursor del buffer al inicio
+        excel_buffer.seek(0)
+
+        # Crear la respuesta HTTP con el archivo Excel adjunto
+        response = HttpResponse(excel_buffer,
+                                content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = 'attachment; filename="bonos.xlsx"'
+
+        return response

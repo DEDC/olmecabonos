@@ -11,3 +11,6 @@ pytz==2022.7.1
 qrcode==7.4.2
 sqlparse==0.4.3
 typing_extensions==4.5.0
+reportlab==4.2.2
+pandas==2.2.2
+djangorestframework==3.10.0
