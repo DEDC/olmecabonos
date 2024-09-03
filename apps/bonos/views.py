@@ -297,6 +297,8 @@ class GenerateExcelApiView(LoginRequiredMixin, APIView):
                 "folio": bono.folio,
                 "tipo": bono.tipo,
                 "nombre": bono.abonado.get("name"),
+                "telefono": bono.abonado.get("phone"),
+                "correo": bono.abonado.get("email"),
                 "seccion": bono.ubicacion.get("section"),
                 "fila": bono.ubicacion.get("row"),
                 "asiento": bono.ubicacion.get("seat"),
