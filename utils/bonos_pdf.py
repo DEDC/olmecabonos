@@ -89,6 +89,10 @@ def generate_pdf(file_front, file_back, bono: Bono):
     # Tamaño de la credencial en cm
     width, height = 5.6 * cm, 8.7 * cm
 
+    if  bono.tipo == "napoli":
+        # Tamaño de la credencial en cm
+        height, width = 5.6 * cm, 8.7 * cm
+
     bonus_name = bono.abonado['name']
     total_word = len(bonus_name.split())
 
@@ -125,73 +129,91 @@ def generate_pdf(file_front, file_back, bono: Bono):
         max_char_count = int(700 * .90 / avg_char_width)
         bonus_name = textwrap.fill(text=bonus_name, width=max_char_count)
     text_y = height - 1.5 * cm  # Ajusta esta posición según sea necesario
-    if bono.tipo == "jaguares_sombra":
-        qr_size = 3
-        qr_x = 48
-        pdf.setFont("Helvetica-Bold", 7)
-        pdf.drawCentredString(text_x + 10, 68, bonus_name)
-        bonus_section = bono.ubicacion['section']
-        pdf.setFont("Helvetica-Bold", 6)
-        pdf.setFillColor("#056b3d")
-        pdf.drawCentredString(50, 50, bonus_section)
-
-        bonus_row = bono.ubicacion['row']
-        pdf.drawString(80, 50, bonus_row)
-
-        bonus_seat = bono.ubicacion['seat']
-        pdf.drawCentredString(65 + 64, 50, bonus_seat)
-    elif bono.tipo == "jaguares_palco":
-        qr_size = 3
-        qr_x = 48
-        text_x += 5
-        if total_word > 3:
-            pdf.setFont("Helvetica-Bold", 6)
-            text_x += 8
-
-        pdf.setFont("Helvetica-Bold", 7)
-        pdf.drawString(30, 67, bonus_name)
+    if bono.tipo == "napoli":
+        pdf.setFont("Helvetica-Bold", 11)
+        pdf.drawString(27, 90, bonus_name)
         bonus_row = bono.ubicacion['section']
-        pdf.setFont("Helvetica-Bold", 6)
+        pdf.setFont("Helvetica-Bold", 10)
+        pdf.setFillColor(colors.black)
+        pdf.drawCentredString(45, 72, "Zona")
+        pdf.drawCentredString(110, 72, "Fila")
+        pdf.drawCentredString(155, 72, "Asiento")
         pdf.setFillColor("#056b3d")
-        pdf.drawCentredString(87, 48, bonus_row)
+        pdf.drawCentredString(60, 55, bonus_row)
+        pdf.setFillColor(colors.black)
+        pdf.drawCentredString(110, 55, bono.ubicacion['row'])
+        pdf.drawCentredString(145, 55, bono.ubicacion['seat'])
+        # Guardar el PDF
+        pdf.save()
     else:
-        pdf.drawString(26, 71, bonus_name)
+        if bono.tipo == "jaguares_sombra":
+            qr_size = 3
+            qr_x = 48
+            pdf.setFont("Helvetica-Bold", 7)
+            pdf.drawCentredString(text_x + 10, 68, bonus_name)
+            bonus_section = bono.ubicacion['section']
+            pdf.setFont("Helvetica-Bold", 6)
+            pdf.setFillColor("#056b3d")
+            pdf.drawCentredString(50, 50, bonus_section)
 
-        bonus_label1 = 'SECC:'
-        pdf.setFont("Helvetica-Bold", 5)
-        pdf.setFillColor(colors.black)
-        pdf.drawCentredString(34, 64, bonus_label1)
+            bonus_row = bono.ubicacion['row']
+            pdf.drawString(80, 50, bonus_row)
 
-        bonus_section = bono.ubicacion['section']
-        pdf.setFillColor("#056b3d")
-        pdf.drawCentredString(54, 64, bonus_section)
+            bonus_seat = bono.ubicacion['seat']
+            pdf.drawCentredString(65 + 64, 50, bonus_seat)
+        elif bono.tipo == "jaguares_palco":
+            qr_size = 3
+            qr_x = 48
+            text_x += 5
+            if total_word > 3:
+                pdf.setFont("Helvetica-Bold", 6)
+                text_x += 8
 
-        bonus_label2 = 'FILA:'
-        pdf.setFillColor(colors.black)
-        pdf.drawCentredString(75, 64, bonus_label2)
+            pdf.setFont("Helvetica-Bold", 7)
+            pdf.drawString(30, 67, bonus_name)
+            bonus_row = bono.ubicacion['section']
+            pdf.setFont("Helvetica-Bold", 6)
+            pdf.setFillColor("#056b3d")
+            pdf.drawCentredString(87, 48, bonus_row)
 
-        bonus_row = bono.ubicacion['row']
-        pdf.setFillColor("#056b3d")
-        pdf.drawCentredString(86, 64, bonus_row)
+        else:
+            pdf.drawString(26, 71, bonus_name)
 
-        bonus_label3 = 'ASIENTO:'
-        pdf.setFillColor(colors.black)
-        pdf.drawCentredString(106, 64, bonus_label3)
+            bonus_label1 = 'SECC:'
+            pdf.setFont("Helvetica-Bold", 5)
+            pdf.setFillColor(colors.black)
+            pdf.drawCentredString(34, 64, bonus_label1)
 
-        bonus_seat = bono.ubicacion['seat']
-        pdf.setFillColor("#056b3d")
-        pdf.drawCentredString(125, 64, bonus_seat)
+            bonus_section = bono.ubicacion['section']
+            pdf.setFillColor("#056b3d")
+            pdf.drawCentredString(54, 64, bonus_section)
 
-    qr_img = qrcode.make(bono.folio, border=0, box_size=qr_size)
-    qr_img_path = "{}_{}_qr.png".format(bonus_name.replace("\n", ""), bono.folio)
-    qr_img.save(qr_img_path)
-    pdf.drawImage(qr_img_path, qr_x, qr_y)
+            bonus_label2 = 'FILA:'
+            pdf.setFillColor(colors.black)
+            pdf.drawCentredString(75, 64, bonus_label2)
 
-    # Guardar el PDF
-    pdf.save()
+            bonus_row = bono.ubicacion['row']
+            pdf.setFillColor("#056b3d")
+            pdf.drawCentredString(86, 64, bonus_row)
 
-    # Eliminar la imagen del código QR temporal
-    os.remove(qr_img_path)
+            bonus_label3 = 'ASIENTO:'
+            pdf.setFillColor(colors.black)
+            pdf.drawCentredString(106, 64, bonus_label3)
+
+            bonus_seat = bono.ubicacion['seat']
+            pdf.setFillColor("#056b3d")
+            pdf.drawCentredString(125, 64, bonus_seat)
+
+        qr_img = qrcode.make(bono.folio, border=0, box_size=qr_size)
+        qr_img_path = "{}_{}_qr.png".format(bonus_name.replace("\n", ""), bono.folio)
+        qr_img.save(qr_img_path)
+        pdf.drawImage(qr_img_path, qr_x, qr_y)
+
+        # Guardar el PDF
+        pdf.save()
+
+        # Eliminar la imagen del código QR temporal
+        os.remove(qr_img_path)
     print("PDF generado exitosamente")
 
 
@@ -271,6 +293,21 @@ def generate_bonus(bonus):
             if obj.tipo.startswith("jaguares"):
                 front_path = "static/bonus/{}.jpg".format(obj.tipo)
                 back_path = "static/bonus/{}_back.jpg".format(obj.tipo)
+                generate_pdf(front_path, back_path, obj)
+                with open('{}_{}.pdf'.format(bonus_name, obj.folio), "rb") as pdf_file:
+                    pdf_data = pdf_file.read()
+                    b1.write(pdf_data)
+                images.append(b1)
+                b1.name = '{}_{}.pdf'.format(bonus_name, obj.folio)
+
+                # Devolver el PDF como respuesta HTTP
+                response = HttpResponse(pdf_data, content_type='application/pdf')
+                response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(b1.name)
+                return response
+
+            elif obj.tipo.startswith("napoli"):
+                front_path = "static/bonus/{}.png".format(obj.tipo)
+                back_path = "static/bonus/{}_back.png".format(obj.tipo)
                 generate_pdf(front_path, back_path, obj)
                 with open('{}_{}.pdf'.format(bonus_name, obj.folio), "rb") as pdf_file:
                     pdf_data = pdf_file.read()

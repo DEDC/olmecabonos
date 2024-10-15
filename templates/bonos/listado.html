@@ -126,6 +126,10 @@
             <input name="type" class="form-check-input" type="checkbox" id="jaguares_sombra" value="jaguares_sombra" {% if 'jaguares_sombra' in type %}checked{% endif %}>
             <label class="form-check-label" for="jaguares_sombra">Sombra Jaguares.</label>
         </div>
+        <div class="form-check form-check-inline">
+            <input name="type" class="form-check-input" type="checkbox" id="napoli" value="napoli" {% if 'napoli' in type %}checked{% endif %}>
+            <label class="form-check-label" for="napoli">Napolibono</label>
+        </div>
     </form>
     <hr>
     <form action="{% url 'descargar' %}" method="post" id="formdown">
