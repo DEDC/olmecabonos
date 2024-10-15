@@ -130,21 +130,18 @@ def generate_pdf(file_front, file_back, bono: Bono):
         bonus_name = textwrap.fill(text=bonus_name, width=max_char_count)
     text_y = height - 1.5 * cm  # Ajusta esta posición según sea necesario
     if bono.tipo == "napoli":
-        pdf.setFont("Helvetica-Bold", 11)
+        qr_x = 180
+        qr_y = 62
+        qr_size = 2.9
+
+        pdf.setFont("Helvetica-Bold", 10)
         pdf.drawString(27, 90, bonus_name)
         bonus_row = bono.ubicacion['section']
         pdf.setFont("Helvetica-Bold", 10)
         pdf.setFillColor(colors.black)
         pdf.drawCentredString(45, 72, "Zona")
-        pdf.drawCentredString(110, 72, "Fila")
-        pdf.drawCentredString(155, 72, "Asiento")
         pdf.setFillColor("#056b3d")
         pdf.drawCentredString(60, 55, bonus_row)
-        pdf.setFillColor(colors.black)
-        pdf.drawCentredString(110, 55, bono.ubicacion['row'])
-        pdf.drawCentredString(145, 55, bono.ubicacion['seat'])
-        # Guardar el PDF
-        pdf.save()
     else:
         if bono.tipo == "jaguares_sombra":
             qr_size = 3
@@ -204,16 +201,16 @@ def generate_pdf(file_front, file_back, bono: Bono):
             pdf.setFillColor("#056b3d")
             pdf.drawCentredString(125, 64, bonus_seat)
 
-        qr_img = qrcode.make(bono.folio, border=0, box_size=qr_size)
-        qr_img_path = "{}_{}_qr.png".format(bonus_name.replace("\n", ""), bono.folio)
-        qr_img.save(qr_img_path)
-        pdf.drawImage(qr_img_path, qr_x, qr_y)
+    qr_img = qrcode.make(bono.folio, border=0, box_size=qr_size)
+    qr_img_path = "{}_{}_qr.png".format(bonus_name.replace("\n", ""), bono.folio)
+    qr_img.save(qr_img_path)
+    pdf.drawImage(qr_img_path, qr_x, qr_y)
 
-        # Guardar el PDF
-        pdf.save()
+    # Guardar el PDF
+    pdf.save()
 
-        # Eliminar la imagen del código QR temporal
-        os.remove(qr_img_path)
+    # Eliminar la imagen del código QR temporal
+    os.remove(qr_img_path)
     print("PDF generado exitosamente")
 
 
