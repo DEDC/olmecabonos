@@ -27,6 +27,7 @@ class Bono(ControlInfo):
         ('jaguares_cabecera_sur', 'Cabecera Sur Jaguares'),
         ('jaguares_preferente', 'Preferentes Jaguares'),
         ('jaguares_sombra', 'Sombra Jaguares'),
+        ('napoli', 'Napolibono'),
     )
     tipo = models.CharField(choices=tipos, max_length=100, default='cortesia')
     abonado = JSONField(editable=False) #(nombre, teléfono, correo opcional)
