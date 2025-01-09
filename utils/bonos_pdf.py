@@ -214,6 +214,75 @@ def generate_pdf(file_front, file_back, bono: Bono):
     print("PDF generado exitosamente")
 
 
+def generate_pdf_olmeca(file_front, file_back, bono: Bono):
+    # Crear un nuevo PDF con ReportLab
+    packet = io.BytesIO()
+
+    # Tamaño de la credencial en cm
+    width, height = 8.7 * cm, 5.6 * cm
+
+    bonus_name = bono.abonado['name']
+    total_word = len(bonus_name.split())
+
+    # Crear un objeto canvas
+    pdf = canvas.Canvas('{}_{}.pdf'.format(bonus_name, bono.folio), pagesize=(width, height))
+
+    # Añadir la parte trasera
+    pdf.drawImage(file_back, 0, 0, width=width, height=height)
+
+    # Crear una nueva página para la parte trasera
+    pdf.showPage()
+
+    # Añadir la parte delantera
+    pdf.drawImage(file_front, 0, 0, width=width, height=height)
+
+    # Añadir el nombre de la persona
+    pdf.setFont("Helvetica-Bold", 9)
+    pdf.setFillColor(colors.white)
+    text_x = 46
+    qr_x = 163
+    qr_y = 50
+    qr_size = 3
+    if total_word == 2:
+        text_x = 50
+    if total_word == 3:
+        text_x = 55
+    if total_word > 3:
+        text_x = 65
+    if total_word > 4:
+        font = ImageFont.truetype('static/fonts/Oswald-DemiBold.ttf', 47)
+        avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
+        max_char_count = int(700 * .90 / avg_char_width)
+        bonus_name = textwrap.fill(text=bonus_name, width=max_char_count)
+    text_y = height - 1.5 * cm  # Ajusta esta posición según sea necesario
+    pdf.drawString(30, 71, bonus_name)
+
+    pdf.setFont("Helvetica-Bold", 7)
+    bonus_section = bono.ubicacion['section']
+    # pdf.setFillColor("#056b3d")
+    pdf.drawCentredString(110, 40, bonus_section)
+
+    bonus_row = bono.ubicacion['row']
+    # pdf.setFillColor("#056b3d")
+    pdf.drawCentredString(110, 28, bonus_row)
+
+    bonus_seat = bono.ubicacion['seat']
+    # pdf.setFillColor("#056b3d")
+    pdf.drawCentredString(110, 18, bonus_seat)
+
+    qr_img = qrcode.make(bono.folio, border=0, box_size=qr_size)
+    qr_img_path = "{}_{}_qr.png".format(bonus_name.replace("\n", ""), bono.folio)
+    qr_img.save(qr_img_path)
+    pdf.drawImage(qr_img_path, qr_x, qr_y)
+
+    # Guardar el PDF
+    pdf.save()
+
+    # Eliminar la imagen del código QR temporal
+    os.remove(qr_img_path)
+    print("PDF generado exitosamente")
+
+
 def generate_bonus(bonus):
     b2 = io.BytesIO()
     zf = zipfile.ZipFile(b2, "w")
@@ -275,7 +344,7 @@ def generate_bonus(bonus):
                 qr_img = qrcode.make(obj.folio, border=0, box_size=6)
                 qr_w, qr_h = qr_img.size
                 offset = ((W-qr_w)//9, 208)
-        if obj.fecha_reg.date().year == 2024:
+        else:
             W, H = (638,1012)
             font = ImageFont.truetype('static/fonts/Oswald-DemiBold.ttf', 47)
             font_short = ImageFont.truetype('static/fonts/Oswald-DemiBold.ttf', 32)
@@ -317,49 +386,65 @@ def generate_bonus(bonus):
                 response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(b1.name)
                 return response
             else:
-                if obj.tipo.startswith("jaguares"):
-                    img = Image.open("static/bonus/{}.jpg".format(obj.tipo), 'r')
-                else:
-                    img = Image.open("static/bonus/bonus_24.png", 'r')
+                # if obj.tipo.startswith("jaguares"):
+                #     img = Image.open("static/bonus/{}.jpg".format(obj.tipo), 'r')
+                # else:
+                #     img = Image.open("static/bonus/bonus_24.png", 'r')
 
-                bonus = ImageDraw.Draw(img)
-                avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
-                max_char_count = int(img.size[0] * .90 / avg_char_width)
-                text = textwrap.fill(text=bonus_name, width=max_char_count)
-                if len(text.splitlines()) > 1:
-                    bonus.text(xy=(90, img.size[1] / 1.45), text=text, font=font_short, fill='#000000')
-                else:
-                    bonus.text(xy=(60, img.size[1] / 1.53), text=text, font=font_short, fill='#000000')
+                front_path = "static/bonus/bono_olmeca_pink.jpg".format(obj.tipo)
+                back_path = "static/bonus/bono_olmeca_pink_back.jpg".format(obj.tipo)
+                generate_pdf_olmeca(front_path, back_path, obj)
 
-                bonus_label1 = 'SECCIÓN:'
-                w, h = bonus.textsize(bonus_label1, font=font_label)
-                bonus.text((60, 739), bonus_label1, fill="black", font=font_label)
-                bonus_section = obj.ubicacion['section']
-                w, h = bonus.textsize(bonus_section, font=font_label)
-                bonus.text((160, 739), bonus_section, fill="#056b3d", font=font_label)
+                with open('{}_{}.pdf'.format(bonus_name, obj.folio), "rb") as pdf_file:
+                    pdf_data = pdf_file.read()
+                    b1.write(pdf_data)
 
-                bonus_label2 = 'FILA:'
-                w, h = bonus.textsize(bonus_label2, font=font_label)
-                bonus.text((280+5, 739), bonus_label2, fill="black", font=font_label)
-                bonus_row = obj.ubicacion['row']
-                w, h = bonus.textsize(bonus_row, font=font_label)
-                bonus.text((332+5, 739), bonus_row, fill="#056b3d", font=font_label)
-
-                bonus_label3 = 'ASIENTO:'
-                w, h = bonus.textsize(bonus_label3, font=font_label)
-                bonus.text((400+50, 739), bonus_label3, fill="black", font=font_label)
-                bonus_seat = obj.ubicacion['seat']
-                w, h = bonus.textsize(bonus_seat, font=font_label)
-                bonus.text((497+50, 739), bonus_seat, fill="#056b3d", font=font_label)
-                # QR
-                qr_img = qrcode.make(obj.folio, border=0, box_size=15)
-                qr_w, qr_h = qr_img.size
-                offset = (164, 264)
-
-                img.paste(qr_img, offset)
-                img.save(b1, 'PNG', quality=100)
                 images.append(b1)
-                b1.name = '{}_{}.png'.format(bonus_name, obj.folio)
+                b1.name = '{}_{}.pdf'.format(bonus_name, obj.folio)
+
+                # Devolver el PDF como respuesta HTTP
+                response = HttpResponse(pdf_data, content_type='application/pdf')
+                response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(b1.name)
+                return response
+
+                # bonus = ImageDraw.Draw(img)
+                # avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
+                # max_char_count = int(img.size[0] * .90 / avg_char_width)
+                # text = textwrap.fill(text=bonus_name, width=max_char_count)
+                # if len(text.splitlines()) > 1:
+                #     bonus.text(xy=(90, img.size[1] / 1.45), text=text, font=font_short, fill='#000000')
+                # else:
+                #     bonus.text(xy=(60, img.size[1] / 1.53), text=text, font=font_short, fill='#000000')
+                #
+                # bonus_label1 = 'SECCIÓN:'
+                # w, h = bonus.textsize(bonus_label1, font=font_label)
+                # bonus.text((60, 739), bonus_label1, fill="black", font=font_label)
+                # bonus_section = obj.ubicacion['section']
+                # w, h = bonus.textsize(bonus_section, font=font_label)
+                # bonus.text((160, 739), bonus_section, fill="#056b3d", font=font_label)
+                #
+                # bonus_label2 = 'FILA:'
+                # w, h = bonus.textsize(bonus_label2, font=font_label)
+                # bonus.text((280+5, 739), bonus_label2, fill="black", font=font_label)
+                # bonus_row = obj.ubicacion['row']
+                # w, h = bonus.textsize(bonus_row, font=font_label)
+                # bonus.text((332+5, 739), bonus_row, fill="#056b3d", font=font_label)
+                #
+                # bonus_label3 = 'ASIENTO:'
+                # w, h = bonus.textsize(bonus_label3, font=font_label)
+                # bonus.text((400+50, 739), bonus_label3, fill="black", font=font_label)
+                # bonus_seat = obj.ubicacion['seat']
+                # w, h = bonus.textsize(bonus_seat, font=font_label)
+                # bonus.text((497+50, 739), bonus_seat, fill="#056b3d", font=font_label)
+                # # QR
+                # qr_img = qrcode.make(obj.folio, border=0, box_size=15)
+                # qr_w, qr_h = qr_img.size
+                # offset = (164, 264)
+                #
+                # img.paste(qr_img, offset)
+                # img.save(b1, 'PNG', quality=100)
+                # images.append(b1)
+                # b1.name = '{}_{}.png'.format(bonus_name, obj.folio)
 
     if len(images) > 1:
         for im in images:
