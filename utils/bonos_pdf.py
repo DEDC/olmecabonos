@@ -392,9 +392,9 @@ def generate_bonus(bonus):
                 b1.name = '{}_{}.pdf'.format(bonus_name, obj.folio)
 
                 # Devolver el PDF como respuesta HTTP
-                response = HttpResponse(pdf_data, content_type='application/pdf')
-                response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(b1.name)
-                return response
+                # response = HttpResponse(pdf_data, content_type='application/pdf')
+                # response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(b1.name)
+                # return response
 
             elif obj.tipo.startswith("napoli"):
                 front_path = "static/bonus/{}.png".format(obj.tipo)
@@ -403,13 +403,13 @@ def generate_bonus(bonus):
                 with open('{}_{}.pdf'.format(bonus_name, obj.folio), "rb") as pdf_file:
                     pdf_data = pdf_file.read()
                     b1.write(pdf_data)
-                images.append(b1)
                 b1.name = '{}_{}.pdf'.format(bonus_name, obj.folio)
+                images.append(b1)
 
                 # Devolver el PDF como respuesta HTTP
-                response = HttpResponse(pdf_data, content_type='application/pdf')
-                response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(b1.name)
-                return response
+                # response = HttpResponse(pdf_data, content_type='application/pdf')
+                # response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(b1.name)
+                # return response
             else:
                 # if obj.tipo.startswith("jaguares"):
                 #     img = Image.open("static/bonus/{}.jpg".format(obj.tipo), 'r')
@@ -429,8 +429,8 @@ def generate_bonus(bonus):
                     pdf_data = pdf_file.read()
                     b1.write(pdf_data)
 
-                images.append(b1)
                 b1.name = '{}_{}.pdf'.format(bonus_name, obj.folio)
+                images.append(b1)
 
                 # Devolver el PDF como respuesta HTTP
                 # response = HttpResponse(pdf_data, content_type='application/pdf')
