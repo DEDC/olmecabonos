@@ -168,6 +168,8 @@ class CargarExcel(LoginRequiredMixin, TemplateView):
                 # bonus_saved = Bono.objects.bulk_create(cache.get('bonus_cache'))
                 messages.success(self.request, 'Se registraron {} bono(s) exitosamente'.format(len(bonus_cache)))
                 cache.set('bonus_cache', None)
+            else:
+                messages.error(self.request, 'No se registraron {} bono(s) exitosamente'.format(len(bonus_cache)))
         context['bonus'] = cache.get('bonus_cache')
         return self.render_to_response(context)
 
