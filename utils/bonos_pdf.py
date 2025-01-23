@@ -221,6 +221,11 @@ def generate_pdf_olmeca(file_front, file_back, bono: Bono):
     # Tamaño de la credencial en cm
     width, height = 8.7 * cm, 5.6 * cm
 
+    if bono.tipo == "vitalicio":
+        # Tamaño de la credencial en cm
+        width, height = 5.6 * cm, 8.7 * cm
+
+
     bonus_name = bono.abonado['name']
     total_word = len(bonus_name.split())
 
@@ -255,20 +260,40 @@ def generate_pdf_olmeca(file_front, file_back, bono: Bono):
         max_char_count = int(700 * .90 / avg_char_width)
         bonus_name = textwrap.fill(text=bonus_name, width=max_char_count)
     text_y = height - 1.5 * cm  # Ajusta esta posición según sea necesario
-    pdf.drawString(30, 71, bonus_name)
 
-    pdf.setFont("Helvetica-Bold", 7)
-    bonus_section = bono.ubicacion['section']
-    # pdf.setFillColor("#056b3d")
-    pdf.drawCentredString(110, 40, bonus_section)
+    if bono.tipo == "vitalicio":
+        qr_size = 4
+        qr_x = 37
+        qr_y = 94
+        pdf.setFont("Helvetica-Bold", 7)
+        pdf.setFillColor("#000000")
+        pdf.drawCentredString(65, 73, bonus_name)
+        bonus_section = bono.ubicacion['section']
+        pdf.setFont("Helvetica-Bold", 6)
+        pdf.setFillColor("#056b3d")
+        pdf.drawCentredString(35, 60, bonus_section)
 
-    bonus_row = bono.ubicacion['row']
-    # pdf.setFillColor("#056b3d")
-    pdf.drawCentredString(110, 28, bonus_row)
+        bonus_row = bono.ubicacion['row']
+        pdf.drawString(70, 60, bonus_row)
 
-    bonus_seat = bono.ubicacion['seat']
-    # pdf.setFillColor("#056b3d")
-    pdf.drawCentredString(110, 18, bonus_seat)
+        bonus_seat = bono.ubicacion['seat']
+        pdf.drawCentredString(65 + 50, 60, bonus_seat)
+
+    else:
+        pdf.drawString(30, 71, bonus_name)
+
+        pdf.setFont("Helvetica-Bold", 7)
+        bonus_section = bono.ubicacion['section']
+        # pdf.setFillColor("#056b3d")
+        pdf.drawCentredString(110, 40, bonus_section)
+
+        bonus_row = bono.ubicacion['row']
+        # pdf.setFillColor("#056b3d")
+        pdf.drawCentredString(110, 28, bonus_row)
+
+        bonus_seat = bono.ubicacion['seat']
+        # pdf.setFillColor("#056b3d")
+        pdf.drawCentredString(110, 18, bonus_seat)
 
     qr_img = qrcode.make(bono.folio, border=0, box_size=qr_size)
     qr_img_path = "{}_{}_qr.png".format(bonus_name.replace("\n", ""), bono.folio)
@@ -393,6 +418,11 @@ def generate_bonus(bonus):
 
                 front_path = "static/bonus/bono_olmeca_pink.jpg".format(obj.tipo)
                 back_path = "static/bonus/bono_olmeca_pink_back.jpg".format(obj.tipo)
+
+                if obj.tipo == "vitalicio":
+                    front_path = "static/bonus/vitalicio_olmeca.jpg".format(obj.tipo)
+                    back_path = "static/bonus/vitalicio_olmeca_back.jpg".format(obj.tipo)
+
                 generate_pdf_olmeca(front_path, back_path, obj)
 
                 with open('{}_{}.pdf'.format(bonus_name, obj.folio), "rb") as pdf_file:
@@ -450,10 +480,10 @@ def generate_bonus(bonus):
         for im in images:
             zf.writestr(im.name, im.getvalue())
         zf.close()
-        response = HttpResponse(b2.getvalue(), content_type = 'application/application/octet-stream')
+        response = HttpResponse(b2.getvalue(), content_type='application/application/octet-stream')
         response['Content-Disposition'] = 'attachment; filename=BONOS.zip'
     else:
-        response = HttpResponse(b1.getvalue(), content_type = 'image/png')
+        response = HttpResponse(b1.getvalue(), content_type='image/png')
         response['Content-Disposition'] = 'attachment; filename={}'.format(b1.name)
         b1.close()
     return response
