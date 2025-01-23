@@ -433,9 +433,9 @@ def generate_bonus(bonus):
                 b1.name = '{}_{}.pdf'.format(bonus_name, obj.folio)
 
                 # Devolver el PDF como respuesta HTTP
-                response = HttpResponse(pdf_data, content_type='application/pdf')
-                response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(b1.name)
-                return response
+                # response = HttpResponse(pdf_data, content_type='application/pdf')
+                # response['Content-Disposition'] = 'attachment; filename="{}.pdf"'.format(b1.name)
+                # return response
 
                 # bonus = ImageDraw.Draw(img)
                 # avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
@@ -483,7 +483,8 @@ def generate_bonus(bonus):
         response = HttpResponse(b2.getvalue(), content_type='application/application/octet-stream')
         response['Content-Disposition'] = 'attachment; filename=BONOS.zip'
     else:
-        response = HttpResponse(b1.getvalue(), content_type='image/png')
+        # response = HttpResponse(b1.getvalue(), content_type='image/png')
+        response = HttpResponse(b1.getvalue(), content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename={}'.format(b1.name)
         b1.close()
     return response
