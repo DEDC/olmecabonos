@@ -72,7 +72,7 @@ class Registrar(LoginRequiredMixin, CreateView):
 class Listar(LoginRequiredMixin, ListView):
     model = Bono
     template_name = 'bonos/listado.html'
-    paginate_by = 50
+    paginate_by = 12
     
     def get_queryset(self):
         q = self.request.GET.get('q', '')
