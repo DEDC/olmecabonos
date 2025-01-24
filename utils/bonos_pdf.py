@@ -291,8 +291,8 @@ def generate_pdf_olmeca(file_front, file_back, bono: Bono):
         pdf.setFillColor("#ffffff")
         pdf.drawCentredString(79, 22, bonus_section)
 
-        # bonus_row = bono.ubicacion['row']
-        # pdf.drawString(70, 60, bonus_row)
+        bonus_row = bono.ubicacion['row']
+        pdf.drawString(195, 22, bonus_row)
         #
         # bonus_seat = bono.ubicacion['seat']
         # pdf.drawCentredString(65 + 50, 60, bonus_seat)
