@@ -283,12 +283,12 @@ def generate_pdf_olmeca(file_front, file_back, bono: Bono):
         qr_size = 2
         qr_x = 29
         qr_y = 45
-        # pdf.setFont("Helvetica-Bold", 7)
+        pdf.setFont("Helvetica-Bold", 14)
+        pdf.setFillColor("#ffffff")
         # pdf.setFillColor("#000000")
-        # pdf.drawCentredString(65, 73, bonus_name)
+        pdf.drawCentredString(110, 130, bonus_name)
         bonus_section = bono.ubicacion['section']
         pdf.setFont("Helvetica-Bold", 22)
-        pdf.setFillColor("#ffffff")
         pdf.drawCentredString(79, 22, bonus_section)
 
         bonus_row = bono.ubicacion['row']
