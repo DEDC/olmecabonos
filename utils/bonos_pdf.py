@@ -279,6 +279,24 @@ def generate_pdf_olmeca(file_front, file_back, bono: Bono):
         bonus_seat = bono.ubicacion['seat']
         pdf.drawCentredString(65 + 50, 60, bonus_seat)
 
+    elif bono.tipo == "palco":
+        qr_size = 2
+        qr_x = 29
+        qr_y = 45
+        # pdf.setFont("Helvetica-Bold", 7)
+        # pdf.setFillColor("#000000")
+        # pdf.drawCentredString(65, 73, bonus_name)
+        bonus_section = bono.ubicacion['section']
+        pdf.setFont("Helvetica-Bold", 22)
+        pdf.setFillColor("#ffffff")
+        pdf.drawCentredString(79, 22, bonus_section)
+
+        # bonus_row = bono.ubicacion['row']
+        # pdf.drawString(70, 60, bonus_row)
+        #
+        # bonus_seat = bono.ubicacion['seat']
+        # pdf.drawCentredString(65 + 50, 60, bonus_seat)
+
     else:
         pdf.drawString(30, 71, bonus_name)
 
@@ -422,6 +440,10 @@ def generate_bonus(bonus):
                 if obj.tipo == "vitalicio":
                     front_path = "static/bonus/vitalicio_olmeca.jpg".format(obj.tipo)
                     back_path = "static/bonus/vitalicio_olmeca_back.jpg".format(obj.tipo)
+
+                if obj.tipo == "palco":
+                    front_path = "static/bonus/palco_olmeca.jpg".format(obj.tipo)
+                    back_path = "static/bonus/palco_olmeca_back.jpg".format(obj.tipo)
 
                 generate_pdf_olmeca(front_path, back_path, obj)
 
