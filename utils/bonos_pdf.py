@@ -251,17 +251,24 @@ def generate_pdf_olmeca(file_front, file_back, bono: Bono):
     if total_word == 2:
         pdf.setFont("Helvetica-Bold", 14)
         text_x = 40
-    if total_word == 3:
-        pdf.setFont("Helvetica-Bold", 12)
-        text_x = 30
+    # if total_word == 3:
+    #     pdf.setFont("Helvetica-Bold", 12)
+    #     text_x = 20
     # if total_word > 3:
     #     text_x = 20
-    if total_word >= 4:
-        font = ImageFont.truetype('static/fonts/Oswald-DemiBold.ttf', 14)
-        avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
-        max_char_count = int(700 * .90 / avg_char_width)
-        bonus_name = textwrap.fill(text=bonus_name, width=max_char_count)
-        text_x = 20
+    if total_word >= 3:
+        # font = ImageFont.truetype('static/fonts/Oswald-DemiBold.ttf', 12)
+        # avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
+        # max_char_count = int(700 * .90 / avg_char_width)
+        pdf.setFont("Helvetica-Bold", 12)
+        bonus_nuevo = ""
+        for x, texto in enumerate(bonus_name.split()):
+            if x in (1, 3, 5):
+                bonus_nuevo = f"{bonus_nuevo} {texto}\n"
+            else:
+                bonus_nuevo = f"{bonus_nuevo} {texto}"
+        bonus_name = bonus_nuevo.strip()
+        text_x = 45
     text_y = height - 1.5 * cm  # Ajusta esta posición según sea necesario
 
     if bono.tipo == "vitalicio":
@@ -301,7 +308,12 @@ def generate_pdf_olmeca(file_front, file_back, bono: Bono):
         # pdf.drawCentredString(65 + 50, 60, bonus_seat)
 
     else:
-        pdf.drawString(text_x, 71, bonus_name)
+        lines = bonus_name.split("\n")
+
+        y_position = 85  # Posición inicial
+        for line in lines:
+            pdf.drawString(text_x, y_position, line)
+            y_position -= 13  # Moverse a la siguiente línea
 
         pdf.setFont("Helvetica-Bold", 7)
         bonus_section = bono.ubicacion['section']
