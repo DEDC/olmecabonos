@@ -97,7 +97,7 @@ def generate_pdf(file_front, file_back, bono: Bono):
     total_word = len(bonus_name.split())
 
     # Crear un objeto canvas
-    pdf = canvas.Canvas('{}_{}.pdf'.format(bonus_name.replace("/", "_"), bono.folio), pagesize=(width, height))
+    pdf = canvas.Canvas('{}_{}.pdf'.format(bonus_name.replace("/", "_").replace('"',""), bono.folio), pagesize=(width, height))
 
     # Añadir la parte trasera
     pdf.drawImage(file_back, 0, 0, width=width, height=height)
@@ -230,7 +230,7 @@ def generate_pdf_olmeca(file_front, file_back, bono: Bono):
     total_word = len(bonus_name.split())
 
     # Crear un objeto canvas
-    pdf = canvas.Canvas('{}_{}.pdf'.format(bonus_name.replace("/", "_"), bono.folio), pagesize=(width, height))
+    pdf = canvas.Canvas('{}_{}.pdf'.format(bonus_name.replace("/", "_").replace('"',""), bono.folio), pagesize=(width, height))
 
     # Añadir la parte trasera
     pdf.drawImage(file_back, 0, 0, width=width, height=height)
@@ -245,7 +245,7 @@ def generate_pdf_olmeca(file_front, file_back, bono: Bono):
     pdf.setFont("Helvetica-Bold", 9)
     pdf.setFillColor(colors.white)
     text_x = 46
-    qr_x = 163
+    qr_x = 160
     qr_y = 50
     qr_size = 3
     if total_word == 2:
@@ -333,6 +333,7 @@ def generate_bonus(bonus):
     for obj in bonus:
         b1 = io.BytesIO()
         bonus_name = obj.abonado['name']
+        print("Folio: {}".format(obj.folio))
         if obj.fecha_reg.date().year == 2023:
             W, H = (1012,638)
             font = ImageFont.truetype('static/fonts/Oswald-DemiBold.ttf', 60)
@@ -403,11 +404,11 @@ def generate_bonus(bonus):
                 front_path = "static/bonus/{}.jpg".format(obj.tipo)
                 back_path = "static/bonus/{}_back.jpg".format(obj.tipo)
                 generate_pdf(front_path, back_path, obj)
-                with open('{}_{}.pdf'.format(bonus_name.replace("/", "_"), obj.folio), "rb") as pdf_file:
+                with open('{}_{}.pdf'.format(bonus_name.replace("/", "_").replace('"', ""), obj.folio), "rb") as pdf_file:
                     pdf_data = pdf_file.read()
                     b1.write(pdf_data)
                 images.append(b1)
-                b1.name = '{}_{}.pdf'.format(bonus_name.replace("/", "_"), obj.folio)
+                b1.name = '{}_{}.pdf'.format(bonus_name.replace("/", "_").replace('"', ""), obj.folio)
 
                 # Devolver el PDF como respuesta HTTP
                 # response = HttpResponse(pdf_data, content_type='application/pdf')
@@ -418,10 +419,10 @@ def generate_bonus(bonus):
                 front_path = "static/bonus/{}.png".format(obj.tipo)
                 back_path = "static/bonus/{}_back.png".format(obj.tipo)
                 generate_pdf(front_path, back_path, obj)
-                with open('{}_{}.pdf'.format(bonus_name.replace("/", "_"), obj.folio), "rb") as pdf_file:
+                with open('{}_{}.pdf'.format(bonus_name.replace("/", "_").replace('"', ""), obj.folio), "rb") as pdf_file:
                     pdf_data = pdf_file.read()
                     b1.write(pdf_data)
-                b1.name = '{}_{}.pdf'.format(bonus_name.replace("/", "_"), obj.folio)
+                b1.name = '{}_{}.pdf'.format(bonus_name.replace("/", "_").replace('"', ""), obj.folio)
                 images.append(b1)
 
                 # Devolver el PDF como respuesta HTTP
@@ -434,8 +435,8 @@ def generate_bonus(bonus):
                 # else:
                 #     img = Image.open("static/bonus/bonus_24.png", 'r')
 
-                front_path = "static/bonus/bono_olmeca_pink.jpg".format(obj.tipo)
-                back_path = "static/bonus/bono_olmeca_pink_back.jpg".format(obj.tipo)
+                front_path = "static/bonus/bono_olmeca_black.jpg".format(obj.tipo)
+                back_path = "static/bonus/bono_olmeca_black_back.jpg".format(obj.tipo)
 
                 if obj.tipo == "vitalicio":
                     front_path = "static/bonus/vitalicio_olmeca.jpg".format(obj.tipo)
@@ -447,11 +448,11 @@ def generate_bonus(bonus):
 
                 generate_pdf_olmeca(front_path, back_path, obj)
 
-                with open('{}_{}.pdf'.format(bonus_name.replace("/", "_"), obj.folio), "rb") as pdf_file:
+                with open('{}_{}.pdf'.format(bonus_name.replace("/", "_").replace('"', ""), obj.folio), "rb") as pdf_file:
                     pdf_data = pdf_file.read()
                     b1.write(pdf_data)
 
-                b1.name = '{}_{}.pdf'.format(bonus_name.replace("/", "_"), obj.folio)
+                b1.name = '{}_{}.pdf'.format(bonus_name.replace("/", "_").replace('"', ""), obj.folio)
                 images.append(b1)
 
                 # Devolver el PDF como respuesta HTTP
