@@ -244,21 +244,24 @@ def generate_pdf_olmeca(file_front, file_back, bono: Bono):
     # Añadir el nombre de la persona
     pdf.setFont("Helvetica-Bold", 9)
     pdf.setFillColor(colors.white)
-    text_x = 46
+    text_x = 30
     qr_x = 160
     qr_y = 50
     qr_size = 3
     if total_word == 2:
-        text_x = 50
+        pdf.setFont("Helvetica-Bold", 14)
+        text_x = 40
     if total_word == 3:
-        text_x = 55
-    if total_word > 3:
-        text_x = 65
-    if total_word > 4:
-        font = ImageFont.truetype('static/fonts/Oswald-DemiBold.ttf', 47)
+        pdf.setFont("Helvetica-Bold", 12)
+        text_x = 30
+    # if total_word > 3:
+    #     text_x = 20
+    if total_word >= 4:
+        font = ImageFont.truetype('static/fonts/Oswald-DemiBold.ttf', 14)
         avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
         max_char_count = int(700 * .90 / avg_char_width)
         bonus_name = textwrap.fill(text=bonus_name, width=max_char_count)
+        text_x = 20
     text_y = height - 1.5 * cm  # Ajusta esta posición según sea necesario
 
     if bono.tipo == "vitalicio":
@@ -298,20 +301,20 @@ def generate_pdf_olmeca(file_front, file_back, bono: Bono):
         # pdf.drawCentredString(65 + 50, 60, bonus_seat)
 
     else:
-        pdf.drawString(30, 71, bonus_name)
+        pdf.drawString(text_x, 71, bonus_name)
 
         pdf.setFont("Helvetica-Bold", 7)
         bonus_section = bono.ubicacion['section']
         # pdf.setFillColor("#056b3d")
-        pdf.drawCentredString(110, 40, bonus_section)
+        pdf.drawCentredString(110, 43, bonus_section)
 
         bonus_row = bono.ubicacion['row']
         # pdf.setFillColor("#056b3d")
-        pdf.drawCentredString(110, 28, bonus_row)
+        pdf.drawCentredString(110, 31, bonus_row)
 
         bonus_seat = bono.ubicacion['seat']
         # pdf.setFillColor("#056b3d")
-        pdf.drawCentredString(110, 18, bonus_seat)
+        pdf.drawCentredString(110, 21, bonus_seat)
 
     qr_img = qrcode.make(bono.folio, border=0, box_size=qr_size)
     qr_img_path = "{}_qr.png".format(bono.folio)
