@@ -154,7 +154,7 @@ class CargarExcel(LoginRequiredMixin, TemplateView):
             ws = wb.active
             objs = []
             for row in ws.iter_rows(min_row=2):
-                abonado = {'name': row[0].value.title(), 'email': '', 'phone': ''}
+                abonado = {'name': row[0].value.upper(), 'email': '', 'phone': ''}
                 bono = {'section': str(row[1].value).upper(), 'row': str(row[2].value).upper(), 'seat': str(row[3].value).upper()}
                 # if row[5].value is not None:
                 #     bono.update({'extra': str(row[5].value)})
