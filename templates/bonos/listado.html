@@ -159,7 +159,7 @@
                         <div class="d-flex justify-content-start align-items-center">
                             {% generate_qr obj.folio %}
                             <div class="ms-3">
-                                <h4 class="card-title bold"><b>{{obj.abonado.name}}</b></h4>
+                                <h4 class="card-title bold"><b>{{obj.abonado.name.upper}}</b></h4>
                                 <span>Sección: <b>{{obj.ubicacion.section}}</b></span>&nbsp;&nbsp;
                                 <span>Fila: <b>{{obj.ubicacion.row}}</b></span>&nbsp;&nbsp;
                                 <span>Asiento: <b>{{obj.ubicacion.seat}}</b></span>

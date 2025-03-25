@@ -264,9 +264,9 @@ def generate_pdf_olmeca(file_front, file_back, bono: Bono):
         bonus_nuevo = ""
         for x, texto in enumerate(bonus_name.split()):
             if x in (1, 3, 5):
-                bonus_nuevo = f"{bonus_nuevo} {texto}\n"
+                bonus_nuevo = f"{bonus_nuevo} {texto.upper()}\n"
             else:
-                bonus_nuevo = f"{bonus_nuevo} {texto}"
+                bonus_nuevo = f"{bonus_nuevo} {texto.upper()}"
         bonus_name = bonus_nuevo.strip()
         text_x = 45
     text_y = height - 1.5 * cm  # Ajusta esta posición según sea necesario
