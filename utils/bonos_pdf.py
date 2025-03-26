@@ -13,9 +13,9 @@ import os
 from reportlab.pdfgen import canvas
 from reportlab.lib.units import cm
 from reportlab.lib import colors
-
+from pdf2image import convert_from_path
 from apps.bonos.models import Bono
-
+import fitz  # PyMuPDF
 
 # class GenerateBonus():
 #     def __init__(self, bonus_list = [], drawer = None):
@@ -268,7 +268,7 @@ def generate_pdf_olmeca(file_front, file_back, bono: Bono):
             else:
                 bonus_nuevo = f"{bonus_nuevo} {texto.upper()}"
         bonus_name = bonus_nuevo.strip()
-        text_x = 45
+        text_x = 25
     text_y = height - 1.5 * cm  # Ajusta esta posición según sea necesario
 
     if bono.tipo == "vitalicio":
@@ -345,6 +345,7 @@ def generate_bonus(bonus):
     b2 = io.BytesIO()
     zf = zipfile.ZipFile(b2, "w")
     images = []
+    img_flag = False
     for obj in bonus:
         b1 = io.BytesIO()
         bonus_name = obj.abonado['name']
@@ -463,12 +464,23 @@ def generate_bonus(bonus):
 
                 generate_pdf_olmeca(front_path, back_path, obj)
 
-                with open('{}_{}.pdf'.format(bonus_name.replace("/", "_").replace('"', ""), obj.folio), "rb") as pdf_file:
+                documento = fitz.open('{}_{}.pdf'.format(bonus_name.replace("/", "_").replace('"', ""), obj.folio))
+
+                for i, pagina in enumerate(documento):
+                    # Renderizar la página como pixmap
+                    pix = pagina.get_pixmap(matrix=fitz.Matrix(3, 3))  # 3x3 para mejorar la calidad
+                    img = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+
+                    # Guardar la imagen
+                    img.save('{}_{}.jpg'.format(bonus_name.replace("/", "_").replace('"', ""), obj.folio), "JPEG")
+
+                with open('{}_{}.jpg'.format(bonus_name.replace("/", "_").replace('"', ""), obj.folio), "rb") as pdf_file:
                     pdf_data = pdf_file.read()
                     b1.write(pdf_data)
 
-                b1.name = '{}_{}.pdf'.format(bonus_name.replace("/", "_").replace('"', ""), obj.folio)
+                b1.name = '{}_{}.jpg'.format(bonus_name.replace("/", "_").replace('"', ""), obj.folio)
                 images.append(b1)
+                img_flag = True
 
                 # Devolver el PDF como respuesta HTTP
                 # response = HttpResponse(pdf_data, content_type='application/pdf')
@@ -521,8 +533,10 @@ def generate_bonus(bonus):
         response = HttpResponse(b2.getvalue(), content_type='application/application/octet-stream')
         response['Content-Disposition'] = 'attachment; filename=BONOS.zip'
     else:
-        # response = HttpResponse(b1.getvalue(), content_type='image/png')
-        response = HttpResponse(b1.getvalue(), content_type='application/pdf')
+        if img_flag:
+            response = HttpResponse(b1.getvalue(), content_type='image/jpg')
+        else:
+            response = HttpResponse(b1.getvalue(), content_type='application/pdf')
         response['Content-Disposition'] = 'attachment; filename={}'.format(b1.name)
         b1.close()
     return response
