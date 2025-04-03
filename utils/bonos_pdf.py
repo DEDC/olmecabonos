@@ -250,7 +250,7 @@ def generate_pdf_olmeca(file_front, file_back, bono: Bono):
     qr_size = 3
     if total_word == 2:
         pdf.setFont("Helvetica-Bold", 14)
-        text_x = 40
+        text_x = 30
     # if total_word == 3:
     #     pdf.setFont("Helvetica-Bold", 12)
     #     text_x = 20
@@ -268,7 +268,7 @@ def generate_pdf_olmeca(file_front, file_back, bono: Bono):
             else:
                 bonus_nuevo = f"{bonus_nuevo} {texto.upper()}"
         bonus_name = bonus_nuevo.strip()
-        text_x = 25
+        text_x = 15
     text_y = height - 1.5 * cm  # Ajusta esta posición según sea necesario
 
     if bono.tipo == "vitalicio":
@@ -314,6 +314,7 @@ def generate_pdf_olmeca(file_front, file_back, bono: Bono):
         for line in lines:
             pdf.drawString(text_x, y_position, line)
             y_position -= 13  # Moverse a la siguiente línea
+            text_x -= 13
 
         pdf.setFont("Helvetica-Bold", 7)
         bonus_section = bono.ubicacion['section']

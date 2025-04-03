@@ -72,7 +72,7 @@ class Registrar(LoginRequiredMixin, CreateView):
 class Listar(LoginRequiredMixin, ListView):
     model = Bono
     template_name = 'bonos/listado.html'
-    paginate_by = 100
+    paginate_by = 250
     
     def get_queryset(self):
         q = self.request.GET.get('q', '')
@@ -169,7 +169,10 @@ class CargarExcel(LoginRequiredMixin, TemplateView):
                 messages.success(self.request, 'Se registraron {} bono(s) exitosamente'.format(len(bonus_cache)))
                 cache.set('bonus_cache', None)
             else:
-                messages.error(self.request, 'No se registraron {} bono(s) exitosamente'.format(len(bonus_cache)))
+                if bonus_cache:
+                    messages.error(self.request, 'No se registraron {} bono(s) exitosamente'.format(len(bonus_cache)))
+                else:
+                    messages.error(self.request, 'No hay bono(s) que cargar')
         context['bonus'] = cache.get('bonus_cache')
         return self.render_to_response(context)
 
