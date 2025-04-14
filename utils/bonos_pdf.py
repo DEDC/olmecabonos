@@ -314,7 +314,7 @@ def generate_pdf_olmeca(file_front, file_back, bono: Bono):
         for line in lines:
             pdf.drawString(text_x, y_position, line)
             y_position -= 13  # Moverse a la siguiente línea
-            text_x -= 13
+            # text_x -= 13
 
         pdf.setFont("Helvetica-Bold", 7)
         bonus_section = bono.ubicacion['section']
