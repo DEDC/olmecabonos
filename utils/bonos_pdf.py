@@ -264,9 +264,9 @@ def generate_pdf_olmeca(file_front, file_back, bono: Bono):
         bonus_nuevo = ""
         for x, texto in enumerate(bonus_name.split()):
             if x in (1, 3, 5):
-                bonus_nuevo = f"{bonus_nuevo} {texto.upper()}\n"
+                bonus_nuevo = f"{bonus_nuevo} {texto.title()}\n"
             else:
-                bonus_nuevo = f"{bonus_nuevo} {texto.upper()}"
+                bonus_nuevo = f"{bonus_nuevo} {texto.title()}"
         bonus_name = bonus_nuevo.strip()
         text_x = 15
     text_y = height - 1.5 * cm  # Ajusta esta posición según sea necesario
@@ -291,18 +291,18 @@ def generate_pdf_olmeca(file_front, file_back, bono: Bono):
 
     elif bono.tipo == "palco":
         qr_size = 2
-        qr_x = 29
-        qr_y = 45
+        qr_x = 37
+        qr_y = 60
         pdf.setFont("Helvetica-Bold", 14)
         pdf.setFillColor("#ffffff")
         # pdf.setFillColor("#000000")
-        pdf.drawCentredString(110, 130, bonus_name)
+        pdf.drawCentredString(120, 130, bonus_name.replace("\n", ""))
         bonus_section = bono.ubicacion['section']
         pdf.setFont("Helvetica-Bold", 22)
-        pdf.drawCentredString(79, 22, bonus_section)
+        pdf.drawCentredString(130, 30, bonus_section)
 
         bonus_row = bono.ubicacion['row']
-        pdf.drawString(195, 22, bonus_row)
+        pdf.drawString(90, 30, bonus_row)
         #
         # bonus_seat = bono.ubicacion['seat']
         # pdf.drawCentredString(65 + 50, 60, bonus_seat)
