@@ -312,7 +312,7 @@ def generate_pdf_olmeca(file_front, file_back, bono: Bono):
 
         y_position = 85  # Posición inicial
         for line in lines:
-            pdf.drawString(text_x, y_position, line)
+            pdf.drawString(text_x, y_position, line.upper())
             y_position -= 13  # Moverse a la siguiente línea
             # text_x -= 13
 
