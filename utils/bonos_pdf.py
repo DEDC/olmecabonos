@@ -25,6 +25,24 @@ import fitz  # PyMuPDF
 # class DrawBonous:
 
 
+def ajustar_texto(canvas, text, x, y, max_width, font_name="Helvetica-Bold", max_font_size=12, min_font_size=6):
+    """
+    Dibuja texto en un canvas de reportlab ajustando el tamaño de fuente
+    para que no se pase del ancho máximo.
+    """
+    font_size = max_font_size
+    canvas.setFont(font_name, font_size)
+
+    while font_size >= min_font_size:
+        text_width = canvas.stringWidth(text, font_name, font_size)
+        if text_width <= max_width:
+            break
+        font_size -= 1
+        canvas.setFont(font_name, font_size)
+
+    canvas.drawString(x, y, text)
+
+
 def generate_bonus_server(bonus):
     zf = zipfile.ZipFile('BONOS.zip', 'w')
     W, H = (638,1012)
@@ -261,14 +279,8 @@ def generate_pdf_olmeca(file_front, file_back, bono: Bono):
         # avg_char_width = sum(font.getsize(char)[0] for char in ascii_letters) / len(ascii_letters)
         # max_char_count = int(700 * .90 / avg_char_width)
         pdf.setFont("Helvetica-Bold", 12)
-        bonus_nuevo = ""
-        for x, texto in enumerate(bonus_name.split()):
-            if x in (1, 3, 5):
-                bonus_nuevo = f"{bonus_nuevo} {texto}\n"
-            else:
-                bonus_nuevo = f"{bonus_nuevo} {texto}"
-        bonus_name = bonus_nuevo.strip()
-        text_x = 15
+        text_x = 30
+
     text_y = height - 1.5 * cm  # Ajusta esta posición según sea necesario
 
     if bono.tipo == "vitalicio":
@@ -277,7 +289,7 @@ def generate_pdf_olmeca(file_front, file_back, bono: Bono):
         qr_y = 94
         pdf.setFont("Helvetica-Bold", 7)
         pdf.setFillColor("#000000")
-        pdf.drawCentredString(65, 73, bonus_name)
+        pdf.drawCentredString(65, 73, bonus_name.replace("\n", ""))
         bonus_section = bono.ubicacion['section']
         pdf.setFont("Helvetica-Bold", 6)
         pdf.setFillColor("#056b3d")
@@ -308,13 +320,15 @@ def generate_pdf_olmeca(file_front, file_back, bono: Bono):
         # pdf.drawCentredString(65 + 50, 60, bonus_seat)
 
     else:
-        lines = bonus_name.split("\n")
+        y_position = 70  # Posición inicial
 
-        y_position = 85  # Posición inicial
-        for line in lines:
-            pdf.drawString(text_x, y_position, line)
-            y_position -= 13  # Moverse a la siguiente línea
-            # text_x -= 13
+        ajustar_texto(
+            canvas=pdf,
+            text=bonus_name,
+            x=text_x,
+            y=y_position,
+            max_width=60  # en puntos (1 pulgada = 72 puntos)
+        )
 
         pdf.setFont("Helvetica-Bold", 7)
         bonus_section = bono.ubicacion['section']
