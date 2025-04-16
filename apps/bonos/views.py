@@ -50,10 +50,10 @@ class Registrar(LoginRequiredMixin, CreateView):
             'payto': self.request.POST.get('bn-payment-to', 'ND'),
             'payamount': self.request.POST.get('bn-payment-amount', 'ND')
         }
-        bonos = Bono.objects.filter(ubicacion=bono, tipo=self.request.POST.get('tipo'))
-        if bonos:
-            messages.error(self.request, 'El asiento ya ha sido reservado con anterioridad')
-            return HttpResponseRedirect(self.success_url)
+        # bonos = Bono.objects.filter(ubicacion=bono, tipo=self.request.POST.get('tipo'))
+        # if bonos:
+        #     messages.error(self.request, 'El asiento ya ha sido reservado con anterioridad')
+        #     return HttpResponseRedirect(self.success_url)
 
         form.instance.abonado = abonado
         form.instance.ubicacion = bono
