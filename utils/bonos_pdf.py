@@ -161,36 +161,39 @@ def generate_pdf(file_front, file_back, bono: Bono):
         pdf.setFillColor("#056b3d")
         pdf.drawCentredString(60, 55, bonus_row)
     else:
-        if bono.tipo == "jaguares_sombra":
+        # if bono.tipo == "jaguares_sombra":
+        if bono.tipo.startswith("jaguares"):
             qr_size = 3
             qr_x = 48
+            qr_y = 133
             pdf.setFont("Helvetica-Bold", 7)
-            pdf.drawCentredString(text_x + 10, 68, bonus_name)
+            pdf.drawCentredString(text_x + 10, 100, bonus_name)
             bonus_section = bono.ubicacion['section']
             pdf.setFont("Helvetica-Bold", 6)
             pdf.setFillColor("#056b3d")
-            pdf.drawCentredString(50, 50, bonus_section)
+            pdf.drawCentredString(50, 81, bonus_section)
 
             bonus_row = bono.ubicacion['row']
-            pdf.drawString(80, 50, bonus_row)
+            pdf.drawString(92, 81, bonus_row)
 
             bonus_seat = bono.ubicacion['seat']
-            pdf.drawCentredString(65 + 64, 50, bonus_seat)
-        elif bono.tipo == "jaguares_palco":
-            qr_size = 3
-            qr_x = 48
-            text_x += 5
-            if total_word > 3:
-                pdf.setFont("Helvetica-Bold", 6)
-                text_x += 8
+            pdf.drawCentredString(145, 81, bonus_seat)
 
-            pdf.setFont("Helvetica-Bold", 7)
-            pdf.drawString(30, 67, bonus_name)
-            bonus_row = bono.ubicacion['section']
-            pdf.setFont("Helvetica-Bold", 6)
-            pdf.setFillColor("#056b3d")
-            pdf.drawCentredString(87, 48, bonus_row)
-
+        # elif bono.tipo == "jaguares_palco":
+        #     qr_size = 3
+        #     qr_x = 48
+        #     text_x += 5
+        #     if total_word > 3:
+        #         pdf.setFont("Helvetica-Bold", 6)
+        #         text_x += 8
+        #
+        #     pdf.setFont("Helvetica-Bold", 7)
+        #     pdf.drawString(30, 67, bonus_name)
+        #     bonus_row = bono.ubicacion['section']
+        #     pdf.setFont("Helvetica-Bold", 6)
+        #     pdf.setFillColor("#056b3d")
+        #     pdf.drawCentredString(87, 48, bonus_row)
+        #
         else:
             pdf.drawString(26, 71, bonus_name)
 
@@ -432,7 +435,8 @@ def generate_bonus(bonus):
             img = None
 
             if obj.tipo.startswith("jaguares"):
-                front_path = "static/bonus/{}.jpg".format(obj.tipo)
+                # front_path = "static/bonus/{}.jpg".format(obj.tipo)
+                front_path = "static/bonus/jaguares_sombra.jpg".format(obj.tipo)
                 back_path = "static/bonus/{}_back.jpg".format(obj.tipo)
                 generate_pdf(front_path, back_path, obj)
                 with open('{}_{}.pdf'.format(bonus_name.replace("/", "_").replace('"', ""), obj.folio), "rb") as pdf_file:
